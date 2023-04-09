@@ -77,4 +77,5 @@ https://forum.arduino.cc/t/solved-uploads-fail-from-debian-to-due-no-device-foun
 stty -F /dev/ttyACM0 speed 1200 cs8 -cstopb -parenb  
 
 sudo chmod +rwx /dev/ttyACM0
+sudo chmod 666 /dev/ttyACM0
 ```

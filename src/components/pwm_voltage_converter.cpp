@@ -21,7 +21,6 @@ Status PWMVoltageConverterModule::setup()
 }
 Status PWMVoltageConverterModule::loop()
 {
-    this->writeToThrottle(this->throttle);
     return Status::SUCCESS;
 
 }
@@ -35,7 +34,12 @@ void PWMVoltageConverterModule::actuateFromArduinoPWM(float throttle)
 {
     throttle = constrain(throttle, 0, 1);
     float frequency = (throttle - 0) / (1 - 0) * (MAX_HZ - MIN_HZ) + MIN_HZ;
+    Serial.println(frequency);
     PWM_Instance->setPWM(THROTTLE_OUTPUT_PIN, frequency, DUTY_CYCLE);
+
+    // float dutyCycle = (throttle - 0) / (1 - 0) * (99 - 0) + 0;
+    // Serial.println(dutyCycle);
+    // PWM_Instance->setPWM(THROTTLE_OUTPUT_PIN, IDLE_FREQUENCY, dutyCycle);
 }
 
 /**
