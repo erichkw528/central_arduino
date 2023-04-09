@@ -13,6 +13,7 @@ void loop()
   synchronizeModules(); 
   module_manager->loop();
   actuation_module->actuate(vehicle_state);
+  Serial.println("");
 }
 
 void setupModules()

@@ -35,7 +35,7 @@ void SparkMaxModule::writeToSteering(float steering)
     // Serial.print(steering);
 
     int steering_pwm = (steering - -1) / (1 - -1) * (OUTPUT_STEERING_MAX - OUTPUT_STEERING_MIN) + OUTPUT_STEERING_MIN; 
-    // Serial.print(" Steering pwm: ");
-    // Serial.println(steering_pwm);
+    Serial.print(" Steering pwm: ");
+    Serial.print(steering_pwm);
     servoSteering.writeMicroseconds(constrain(steering_pwm, OUTPUT_STEERING_MIN, OUTPUT_STEERING_MAX));
 }

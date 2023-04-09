@@ -16,7 +16,11 @@ PWMVoltageConverterModule::PWMVoltageConverterModule(int pin)
 }
 Status PWMVoltageConverterModule::setup()
 {
-    PWM_Instance = new SAMDUE_PWM(this->pin, IDLE_FREQUENCY, 20.0f);
+    // PWM_Instance = new SAMDUE_PWM(this->pin, IDLE_FREQUENCY, 20.0f);
+    pinMode(this->pin, OUTPUT);
+    digitalWrite(this->pin, HIGH);
+    delay(1000);
+
     return Status::SUCCESS;
 }
 Status PWMVoltageConverterModule::loop()
@@ -33,13 +37,10 @@ Status PWMVoltageConverterModule::cleanup()
 void PWMVoltageConverterModule::actuateFromArduinoPWM(float throttle)
 {
     throttle = constrain(throttle, 0, 1);
-    float frequency = (throttle - 0) / (1 - 0) * (MAX_HZ - MIN_HZ) + MIN_HZ;
-    Serial.println(frequency);
-    PWM_Instance->setPWM(THROTTLE_OUTPUT_PIN, frequency, DUTY_CYCLE);
-
-    // float dutyCycle = (throttle - 0) / (1 - 0) * (99 - 0) + 0;
-    // Serial.println(dutyCycle);
-    // PWM_Instance->setPWM(THROTTLE_OUTPUT_PIN, IDLE_FREQUENCY, dutyCycle);
+    int output = (throttle - 0) / (1.0 - 0.0) * (225.0 - 0.0) + 0.0;
+    Serial.print(" Throttle: ");
+    Serial.print(output);
+    analogWrite(this->pin, output);
 }
 
 /**
