@@ -38,8 +38,6 @@ void PWMVoltageConverterModule::actuateFromArduinoPWM(float throttle)
 {
     throttle = constrain(throttle, 0, 1);
     int output = (throttle - 0) / (1.0 - 0.0) * (225.0 - 0.0) + 0.0;
-    Serial.print(" Throttle: ");
-    Serial.print(output);
     analogWrite(this->pin, output);
 }
 
