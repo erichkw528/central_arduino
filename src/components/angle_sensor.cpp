@@ -25,7 +25,11 @@ Status SteeringAngleSensor::loop()
     }
     
     float sensorValue = analogRead(this->pin);
-    float angle = (sensorValue - 0) / (1023 - 0) * (this->RIGHT_ANGLE - this->LEFT_ANGLE) + this->LEFT_ANGLE;
+    Serial.print(" Sensor Value: ");
+    Serial.print(sensorValue);
+    // float angle = -1 * ((sensorValue - 0) / (1023 - 0) * (30 - -30) + -30);
+
+    float angle = (sensorValue - 0) / (1023 - 0) * (MAX_STEERING_DEGREE - MIN_STEERING_DEGREE) + MIN_STEERING_DEGREE;
     this->currentAngle = angle;
 
     this->addReading(this->currentAngle);

@@ -5,6 +5,8 @@
 #include <SPI.h> // using CAN_BUS_Shield from Seeed Studio
 #include "pin.h"
 #include "mcp2515_can.h"
+#include "base_module.h"
+
 #define CAN_EXT_ID 1
 #define CAN_RTR_BIT 8
 const float MIN_DIST = 0.0;                // Minimum distance for actuator
@@ -47,3 +49,7 @@ void setActuatorPosition(float inputDist);
 void setupBrake();
 
 void writeToBrake(int brake);
+
+
+
+
