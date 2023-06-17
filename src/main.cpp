@@ -74,5 +74,9 @@ void synchronizeModules()
 
   // run PID
   float steering_effort = steering_pid->compute(vehicle_state->angle, target_steering_angle_deg);
-  vehicle_state->current_actuation->steering = steering_effort;
+
+
+  vehicle_state->current_actuation->steering = steering_effort; //radio_link->getSteering(); // actually sending steering
+  Serial.print(" steering effort: ");
+  Serial.print(steering_effort);
 }

@@ -11,6 +11,8 @@ In addition to this, structs have no inheritance while a class has this feature.
 Another difference is that structs are typically used to represent a collection of data, while classes are used to represent objects with both data and behavior (methods).
 However, struct and class are very similar in C++, the only real difference is the default access level and some people use struct for POD (Plain Old Data) and class for object with behavior. You can use struct or class interchangeably in most cases.
 */
+
+// ACTUATION EFFOR
 struct Actuation
 {
     float throttle = 0.0f;

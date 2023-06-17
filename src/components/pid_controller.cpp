@@ -25,10 +25,14 @@ Status PIDController::cleanup() {
 
 float PIDController::compute(float value, float target) 
 {
-    Serial.print("target steering angle: ");
+    Serial.print("target angle: ");
     Serial.print(target);
-    
+
+    Serial.print(" current angle: ");
+    Serial.print(value);
+
     float error = target - value;
+    
     total_err += error;
     float output = error * this->kp + (error - prev_err) * this->kd + this->total_err * this->ki;
     prev_err = error;
