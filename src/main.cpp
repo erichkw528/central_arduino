@@ -65,7 +65,7 @@ void synchronizeModules()
     target_steering_angle_deg = serial_communicator->getAction()->steering;
   } else {
     // get data from radio link
-    // vehicle_state->current_actuation->throttle = radio_link->getThrottle();
+    vehicle_state->current_actuation->throttle = radio_link->getThrottle();
     // vehicle_state->current_actuation->brake = radio_link->getBrake();
     // vehicle_state->current_actuation->steering = radio_link->getSteering();
     target_steering_angle_deg = radio_link->getSteeringDeg();
