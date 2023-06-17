@@ -53,16 +53,16 @@ void actuatorInit()
     }
     // Serial.println("CAN init ok!");
 
-    //    // Disable everything
-    //    CAN.sendMsgBuf(COMMAND_ID, 1, 8, CLUTCH_MOTOR_OFF);
-    //    delay(20);
+    // Disable everything
+    // CAN.sendMsgBuf(COMMAND_ID, 1, 8, CLUTCH_MOTOR_OFF);
+    // delay(20);
 
-    // Enable clutch for loop input
-    CAN.sendMsgBuf(COMMAND_ID, CAN_EXT_ID, CAN_RTR_BIT, CLUTCH_ON);
-    delay(20);
+    // // Enable clutch for loop input
+    // CAN.sendMsgBuf(COMMAND_ID, CAN_EXT_ID, CAN_RTR_BIT, CLUTCH_ON);
+    // delay(20);
 
-    setActuatorPosition(MIN_DIST);
-    delay(3000);
+    // setActuatorPosition(MIN_DIST);
+    // delay(3000);
 }
 
 /*
@@ -117,21 +117,21 @@ void setupBrake()
 void writeToBrake(float brake)
 {
     // TODO: revamp
-    // float brake_out = float(constrain(brake, output_brake_min, output_brake_max));
+    float brake_out = float(constrain(brake, output_brake_min, output_brake_max));
 
-    // if (brake_out != prev_brake && brake_out > 1800)
-    // {
-    //     prev_brake = brake_out;
-    //     float actuator_out = map(brake_out, output_brake_min, output_brake_max, MIN_DIST, MAX_DIST);
-    //     setActuatorPosition(actuator_out);
-    //     return;
-    // }
+    if (brake_out != prev_brake && brake_out > 1800)
+    {
+        prev_brake = brake_out;
+        float actuator_out = map(brake_out, output_brake_min, output_brake_max, MIN_DIST, MAX_DIST);
+        setActuatorPosition(actuator_out);
+        return;
+    }
 
-    // if (brake_out != prev_brake && brake_out < 1200)
-    // {
-    //     prev_brake = brake_out;
-    //     float actuator_out = map(brake_out, output_brake_min, output_brake_max, MIN_DIST, MAX_DIST);
-    //     setActuatorPosition(actuator_out);
-    //     return;
-    // }
+    if (brake_out != prev_brake && brake_out < 1200)
+    {
+        prev_brake = brake_out;
+        float actuator_out = map(brake_out, output_brake_min, output_brake_max, MIN_DIST, MAX_DIST);
+        setActuatorPosition(actuator_out);
+        return;
+    }
 }

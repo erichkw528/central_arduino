@@ -8,10 +8,12 @@
  * @author Michael Wu
  * @date 1/29/2023
  */
-
+#ifndef ANGLE_SENSOR_h
+#define ANGLE_SENSOR_h
 #include "pin.h"
 #include "base_module.h"
 #include <CircularBuffer.h>
+#include "macros.h"
 
 const uint32_t STEERING_ANGLE_BUFFER_LEN = 5;
 
@@ -93,16 +95,6 @@ private:
      * @brief Pin number for the sensor
      */
     int pin;
-
-    /**
-     * @brief The left angle limit
-     */
-    const float LEFT_ANGLE = -30.0;
-
-    /**
-     * @brief The right angle limit
-     */
-    const float RIGHT_ANGLE = 30.0;
     /**
      * @brief add new reading to the buffer
     */
@@ -117,3 +109,4 @@ private:
     CircularBuffer<float, STEERING_ANGLE_BUFFER_LEN> reading_buffer;
     CircularBuffer<uint32_t, STEERING_ANGLE_BUFFER_LEN> timestamp_buffer;
 };
+#endif //ANGLE_SENSOR_h

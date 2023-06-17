@@ -13,6 +13,7 @@
 #include "spark_max.h"
 #include "actuator.h"
 #include "SerialCommunications.h"
+#include "pid_controller.h"
 
 VehicleState *vehicle_state;
 
@@ -25,6 +26,7 @@ SteeringLimiter *steering_limiter;
 SparkMaxModule *spark_max_module;
 ActuationModule *actuation_module;
 SerialCommunicator *serial_communicator;
+PIDController *steering_pid;
 
 float steering;
 /**

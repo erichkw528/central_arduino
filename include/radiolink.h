@@ -5,6 +5,8 @@
 #include <Arduino.h>
 #include "base_module.h"
 #include "models.h"
+#include "macros.h"
+
 
 class RadioLinkModule : public BaseModule
 {
@@ -22,6 +24,7 @@ public:
     Actuation * getRadioLinkActuation();
     bool isAutoFromButton();
     float getSteering();
+    float getSteeringDeg();
     float getThrottle();
     float getBrake();
 

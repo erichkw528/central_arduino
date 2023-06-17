@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 #include "radiolink.h"
+#include "utilities.h"
 
 static uint32_t throttle_source_pin;
 static uint32_t steering_source_pin;
@@ -58,11 +59,21 @@ Status RadioLinkModule::cleanup()
 {
     return Status::SUCCESS;
 }
+float RadioLinkModule::getSteeringDeg()
+{
+    int flagValue = 0;
+    flagValue = steering_pulse_time;
+    float steering_value = pulseTimeToFloat(flagValue);
+    float converted = (steering_value + 1.0) / (1.0 + 1.0) * (MAX_STEERING_DEGREE - MIN_STEERING_DEGREE) + MIN_STEERING_DEGREE;
+    return converted;
+}
+
 float RadioLinkModule::getSteering()
 {
     int flagValue = 0;
     flagValue = steering_pulse_time;
-    return pulseTimeToFloat(flagValue);
+    float steering_value = pulseTimeToFloat(flagValue);
+    return steering_value;
 }
 
 float RadioLinkModule::getThrottle()
