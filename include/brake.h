@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+#ifndef BRAKE_h
+#define BRAKE_h
+
 #include <SPI.h> // using CAN_BUS_Shield from Seeed Studio
 #include "pin.h"
 #include "mcp2515_can.h"
@@ -58,6 +61,12 @@ class BrakeActuator : public BaseModule
         Status setup();
         Status loop();
         Status cleanup();
+        /**
+         * 0 ~ 1
+        */
+        void writeToBrake(float val);
+
 
 };
 
+#endif // BRAKE_h

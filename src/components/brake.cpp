@@ -159,3 +159,10 @@ Status BrakeActuator::cleanup()
 }
 
 
+
+void BrakeActuator::writeToBrake(float val) {
+    float converted = (val - 0) / (1.0 - 0.0) * (2000.0 - 1000.0) + 1000.0;
+    writeToBrake(converted);
+}
+
+

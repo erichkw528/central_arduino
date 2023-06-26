@@ -39,14 +39,16 @@ void setupModules()
   spark_max_module = new SparkMaxModule(STEERING_OUTPUT_PIN);
   module_manager->setupModule(spark_max_module);
 
-  actuation_module = new ActuationModule(steering_limiter, pwm_to_voltage_converter, spark_max_module);
+  brake_actuator = new BrakeActuator();
+  module_manager->setupModule(brake_actuator);
+
+  actuation_module = new ActuationModule(steering_limiter, pwm_to_voltage_converter, spark_max_module, brake_actuator);
   module_manager->setupModule(actuation_module);
 
   steering_pid = new PIDController(0.03, 0, 0, -1.0, 1.0);
   module_manager->setupModule(steering_pid);
 
-  brake_actuator = new BrakeActuator();
-  module_manager->setupModule(brake_actuator);
+
   // serial_communicator = new SerialCommunicator();
   // module_manager->setupModule(serial_communicator);
 }
@@ -70,12 +72,11 @@ void synchronizeModules()
     // get data from radio link
     vehicle_state->current_actuation->throttle = radio_link->getThrottle();
     vehicle_state->current_actuation->brake = radio_link->getBrake();
-    // vehicle_state->current_actuation->steering = radio_link->getSteering();
     target_steering_angle_deg = radio_link->getSteeringDeg();
   }
 
   // run PID
   float steering_effort = steering_pid->compute(vehicle_state->angle, target_steering_angle_deg);
-
   vehicle_state->current_actuation->steering = steering_effort; //radio_link->getSteering(); // actually sending steering
+
 }
