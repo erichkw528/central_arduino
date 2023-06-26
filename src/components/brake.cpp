@@ -46,11 +46,11 @@ String posCmdBite3Parser(int ce, int m, String dpos_hi)
  */
 void actuatorInit()
 {
-    while (CAN_OK != CAN.begin(CAN_250KBPS))
-    { // init can bus : baudrate = 500k
-        // Serial.println("CAN init fail, retry...");
-        delay(10);
-    }
+    // while (CAN_OK != CAN.begin(CAN_250KBPS))
+    // { // init can bus : baudrate = 500k
+    //     Serial.println("CAN init fail, retry...");
+    //     delay(10);
+    // }
     // Serial.println("CAN init ok!");
 
     // Disable everything
@@ -135,3 +135,27 @@ void writeToBrake(float brake)
         return;
     }
 }
+
+
+BrakeActuator::BrakeActuator()
+{
+
+}
+
+Status BrakeActuator::setup()
+{
+    actuatorInit();
+    return Status::SUCCESS;
+}
+
+Status BrakeActuator::loop()
+{
+    return Status::SUCCESS;
+}
+
+Status BrakeActuator::cleanup()
+{
+    return Status::SUCCESS;
+}
+
+

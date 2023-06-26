@@ -14,6 +14,7 @@
 #include "actuator.h"
 #include "SerialCommunications.h"
 #include "pid_controller.h"
+#include "brake.h"
 
 VehicleState *vehicle_state;
 
@@ -27,6 +28,7 @@ SparkMaxModule *spark_max_module;
 ActuationModule *actuation_module;
 SerialCommunicator *serial_communicator;
 PIDController *steering_pid;
+BrakeActuator *brake_actuator;
 
 float steering;
 /**
