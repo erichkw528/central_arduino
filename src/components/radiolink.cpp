@@ -187,16 +187,6 @@ void RadioLinkModule::calcButtonSignal()
     }
 }
 
-Actuation * RadioLinkModule::getRadioLinkActuation() 
-{    
-    Actuation * act = new Actuation();
-    act->throttle = this->pulseTimeToFloat(throttle_pulse_time);
-    act->steering = this->pulseTimeToFloat(steering_pulse_time);
-    act->brake = this->pulseTimeToFloat(knob_pulse_time);
-    act->reverse = false;
-    return act;
-}
-
 bool RadioLinkModule::isAutoFromButton()
 {
     return button_pulse_time >= 1600;
