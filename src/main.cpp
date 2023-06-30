@@ -14,7 +14,7 @@ void loop()
   module_manager->loop();
   actuation_module->actuate(vehicle_state);
 
-  Serial.println();
+  // Serial.println();
 }
 
 void setupModules()
@@ -32,6 +32,9 @@ void setupModules()
 
   radio_link = new RadioLinkModule(THROTTLE_SOURCE, STEERING_SOURCE, BRAKE_SOURCE, BUTTON_SOURCE);
   module_manager->setupModule(radio_link);
+
+  speed_sensor = new SpeedSensor(SPEED_SENSOR_INPUT_PIN);
+  module_manager->setupModule(speed_sensor);
 
   steering_limiter = new SteeringLimiter(STEERING_LEFT_LIMITER, STEERING_RIGHT_LIMITER);
   module_manager->setupModule(steering_limiter);
@@ -55,6 +58,7 @@ void synchronizeModules()
   // vehicle_state->angular_velocity = steering_angle_sensor->getAngularVelocity();
   vehicle_state->is_left_limiter_ON = steering_limiter->isLeftLimiterON();
   vehicle_state->is_right_limiter_ON = steering_limiter->isRightLimiterON();
+  vehicle_state->speed = speed_sensor->getCurrentSpeed();
 
   float target_steering_angle_deg = 0;
   if (radio_link->isAutoFromButton()) {
