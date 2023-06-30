@@ -29,12 +29,8 @@ SparkMaxModule *spark_max_module;
 ActuationModule *actuation_module;
 SerialCommunicator *serial_communicator;
 PIDController *steering_pid;
-<<<<<<< HEAD
 SpeedSensor *speed_sensor;
-
-=======
 BrakeActuator *brake_actuator;
->>>>>>> mwu/brake
 
 float steering;
 /**

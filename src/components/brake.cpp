@@ -5,9 +5,9 @@
 #include <brake.h>
 
 mcp2515_can CAN(SPI_CS_PIN);
-int output_brake_max = 2000;
-int output_brake_min = 1500;
-int prev_brake = 1000;
+int output_brake_max = 1;
+int output_brake_min = 0;
+int prev_brake = 0;
 
 void overwriteBuf(volatile byte *buf, int b0, int b1, int b2, int b3, int b4, int b5, int b6, int b7)
 {
@@ -106,33 +106,24 @@ void setActuatorPosition(float inputDist)
     CAN.sendMsgBuf(COMMAND_ID, CAN_EXT_ID, CAN_RTR_BIT, data);
 }
 
-void setupBrake()
-{
-    actuatorInit();
-}
-
 /**
- * @param brake value from 1000 - 2000
+ * @param brake value from 0 - 1
  */
 void writeToBrake(float brake)
 {
     // TODO: revamp
     float brake_out = float(constrain(brake, output_brake_min, output_brake_max));
 
-    if (brake_out != prev_brake && brake_out > 1800)
+    // actuate only if brake is triggered greater than certain value
+    if (brake_out != prev_brake && brake_out > 0.3)
     {
         prev_brake = brake_out;
         float actuator_out = map(brake_out, output_brake_min, output_brake_max, MIN_DIST, MAX_DIST);
         setActuatorPosition(actuator_out);
         return;
-    }
-
-    if (brake_out != prev_brake && brake_out < 1200)
-    {
-        prev_brake = brake_out;
-        float actuator_out = map(brake_out, output_brake_min, output_brake_max, MIN_DIST, MAX_DIST);
-        setActuatorPosition(actuator_out);
-        return;
+    } else {
+        // other wise retract brake
+        setActuatorPosition(0);
     }
 }
 

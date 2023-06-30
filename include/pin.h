@@ -14,5 +14,5 @@
 
 #define SPEED_SENSOR_INPUT_PIN 2
 #define STEERING_ANGLE_SENSOR A1
-#define SPI_CS_PIN 4
+#define SPI_CS_PIN 9
 #define CAN_INT_PIN 2
