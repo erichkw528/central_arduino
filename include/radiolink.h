@@ -21,11 +21,16 @@ public:
     Status loop();
     Status cleanup();
 
-    Actuation * getRadioLinkActuation();
     bool isAutoFromButton();
     float getSteering();
     float getSteeringDeg();
+    /**
+     * 0 ~ 1
+    */
     float getThrottle();
+    /**
+     * 0 ~ 1
+    */
     float getBrake();
 
 private:

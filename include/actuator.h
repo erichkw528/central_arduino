@@ -4,6 +4,7 @@
 #include "base_module.h"
 #include "steering_limiter.h"
 #include "pwm_voltage_converter.h"
+#include "brake.h"
 
 class ActuationModule : public BaseModule
 {
@@ -11,7 +12,8 @@ class ActuationModule : public BaseModule
 public:
     ActuationModule(SteeringLimiter *limiter,
                     PWMVoltageConverterModule *pwm_to_voltage_converter,
-                    SparkMaxModule *spark_max_module
+                    SparkMaxModule *spark_max_module,
+                    BrakeActuator *brake_module
     );
     Status setup();
     Status loop();
@@ -27,4 +29,5 @@ private:
     SteeringLimiter *steering_limiter;
     PWMVoltageConverterModule *pwm_to_voltage_converter;
     SparkMaxModule *spark_max_module;
+    BrakeActuator *brake_module;
 };
