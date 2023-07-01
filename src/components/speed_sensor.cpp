@@ -32,14 +32,14 @@ Status SpeedSensor::loop()
         float distanceInches = pulseCount * (WHEEL_CIRCUMFERENCE / 2.0);  // Calculate distance in inches
         float distanceMiles = distanceInches / INCHES_PER_MILE;           // Convert distance to miles
         float speedMPH = distanceMiles / (elapsedTime / 3600000.0);     // Calculate speed in mph
-        Serial.print("Speed: ");
-        Serial.print(speedMPH);
-        Serial.println(" mph");
         currentSpeedMph = speedMPH;
+        addSpeedReading(currentSpeedMph);
+        // Serial.println(getCurrentSpeed());
     }
     // Reset pulse count and previous time
     pulseCount = 0;
     prevTime = currentTime;
+
     return Status::SUCCESS;
 }
 
@@ -56,5 +56,18 @@ void SpeedSensor::pulseCounter()
 
 float SpeedSensor::getCurrentSpeed() 
 {
-    return currentSpeedMph;
+    float total = 0;
+    for (size_t i = 0; i < speedQueueLength; i++)
+    {
+        total+= speedQueue[i];
+    }
+    float avg = total / speedQueueLength;
+    
+    return avg;
+}
+
+void SpeedSensor::addSpeedReading(float speed)
+{
+    speedQueue[currentIndex % speedQueueLength] = speed;
+    currentIndex = (currentIndex + 1) % speedQueueLength;
 }

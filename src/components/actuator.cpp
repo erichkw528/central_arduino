@@ -32,7 +32,7 @@ Actuation * ActuationModule::p_ensure_safety(Actuation *act)
     Actuation *output = new Actuation();
     output->brake = act->brake;
     output->reverse = act->reverse;
-    output->throttle = MAX(0, act->throttle);
+    output->throttle = 0 > act->throttle ? 0 : act->throttle; // MAX(0, act->throttle);
     output->steering = act->steering;
 
     if (this->steering_limiter->isLeftLimiterON())
@@ -51,7 +51,7 @@ void ActuationModule::p_drive(VehicleState *vehicle_state)
     Actuation *act = this->p_ensure_safety(vehicle_state->current_actuation);
     spark_max_module->writeToSteering(act->steering);
     pwm_to_voltage_converter->writeToThrottle(act->throttle);
-    brake_module->writeToBrake(act->brake);
+    // brake_module->writeToBrake(act->brake);
     free(act); // MUST free allocated memory
 }
 

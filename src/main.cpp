@@ -6,6 +6,7 @@ void setup()
   Serial.begin(115200);
   vehicle_state = new VehicleState();
   setupModules();
+  Serial.println("Setup completed");
 }
 
 void loop()
@@ -13,7 +14,6 @@ void loop()
   synchronizeModules(); 
   module_manager->loop();
   actuation_module->actuate(vehicle_state);
-
   // Serial.println();
 }
 
@@ -42,8 +42,8 @@ void setupModules()
   spark_max_module = new SparkMaxModule(STEERING_OUTPUT_PIN);
   module_manager->setupModule(spark_max_module);
 
-  brake_actuator = new BrakeActuator();
-  module_manager->setupModule(brake_actuator);
+  // brake_actuator = new BrakeActuator();
+  // module_manager->setupModule(brake_actuator);
 
   actuation_module = new ActuationModule(steering_limiter, pwm_to_voltage_converter, spark_max_module, brake_actuator);
   module_manager->setupModule(actuation_module);
@@ -78,9 +78,10 @@ void synchronizeModules()
     vehicle_state->current_actuation->brake = radio_link->getBrake();
     target_steering_angle_deg = radio_link->getSteeringDeg();
   }
-
+  // vehicle_state->current_actuation->throttle = 0.1;
   // run PID
   float steering_effort = steering_pid->compute(vehicle_state->angle, target_steering_angle_deg);
   vehicle_state->current_actuation->steering = steering_effort; //radio_link->getSteering(); // actually sending steering
-
+  // Serial.print("Speed: ");
+  // Serial.print(vehicle_state->speed);
 }

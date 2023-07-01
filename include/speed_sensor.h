@@ -22,6 +22,11 @@ private:
     unsigned long prevTime = 0; // Time of the previous pulse
     unsigned long prevDebounceTime = 0;
     float currentSpeedMph = 0;
+    uint32_t speedQueueLength = 5;
+    float speedQueue[5];
+    uint32_t currentIndex = 0;
+    
+    void addSpeedReading(float speed);
     
 };
 
