@@ -15,7 +15,7 @@ Status SpeedSensor::setup()
 
 Status SpeedSensor::loop()
 {
-    unsigned long currentTime = millis();  // Current time in milliseconds
+     unsigned long currentTime = millis();  // Current time in milliseconds
     unsigned long elapsedDebounceTime = currentTime - prevDebounceTime;
 
     // if not reached debounce time
@@ -28,20 +28,37 @@ Status SpeedSensor::loop()
     // if reached debounce time
     // calculate how many times did the pulse came in within the elapsed time
     unsigned long elapsedTime = currentTime - prevTime;
-    if (elapsedTime < 1000) {
-        float distanceInches = pulseCount * (WHEEL_CIRCUMFERENCE / 2.0);  // Calculate distance in inches
-        float distanceMiles = distanceInches / INCHES_PER_MILE;           // Convert distance to miles
-        float speedMPH = distanceMiles / (elapsedTime / 3600000.0);     // Calculate speed in mph
-        currentSpeedMph = speedMPH;
-        addSpeedReading(currentSpeedMph);
+    // if (elapsedTime < 50) {
+    float distanceInches = pulseCount * (WHEEL_CIRCUMFERENCE / 2.0);  // Calculate distance in inches
+    float distanceMiles = distanceInches / INCHES_PER_MILE;           // Convert distance to miles
+    sensorReadingMph = distanceMiles / (elapsedTime / 3600000.0);     // Calculate speed in mph
+    currentSpeedMph = sensorReadingMph;
+    addSpeedReading(currentSpeedMph);
         // Serial.println(getCurrentSpeed());
-    }
+    // }
     // Reset pulse count and previous time
     pulseCount = 0;
     prevTime = currentTime;
-
     return Status::SUCCESS;
 }
+
+void SpeedSensor::update(float targetSpeed, float throttle_effort) 
+{    
+    unsigned long currentTime = millis();  // Current time in milliseconds
+    unsigned long elapsedDebounceTime = currentTime - prevDebounceTime;
+    float acceleration = 20.0 * throttle_effort;
+    // if not reached debounce time
+    if (elapsedDebounceTime < DEBOUNCE_DELAY)
+    {
+        // estimate the speed
+        currentSpeedMph = sensorReadingMph + acceleration * elapsedDebounceTime / 1000;
+        // Serial.print(" estimatedReading:");
+        // Serial.print(currentSpeedMph);
+        addSpeedReading(currentSpeedMph);
+    }
+}
+
+
 
 Status SpeedSensor::cleanup()
 {

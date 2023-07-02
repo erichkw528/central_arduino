@@ -68,6 +68,17 @@ float RadioLinkModule::getSteeringDeg()
     return converted;
 }
 
+float RadioLinkModule::getTargetSpeed()
+{
+    int flagValue = 0;
+    flagValue = throttle_pulse_time; // 1000 ~ 2000
+    float throttle_val = pulseTimeToFloat(flagValue); // -1 ~ 1
+    float capped = throttle_val < 0 ? 0 : throttle_val; // 0 ~ 1
+    float targetSpeed = capped * MAX_SPEED;
+    // float converted = (steering_value + 1.0) / (1.0 + 1.0) * (MAX_STEERING_DEGREE - MIN_STEERING_DEGREE) + MIN_STEERING_DEGREE;
+    return targetSpeed;
+}
+
 float RadioLinkModule::getSteering()
 {
     int flagValue = 0;

@@ -16,11 +16,11 @@ class PIDController : public BaseModule
         Status cleanup();
 
         float compute(float value, float target);
-
-    private:
         float kp = 1;
         float kd = 0;
         float ki = 0;
+    private:
+
 
         float min_output = -1;
         float max_output = 1;
@@ -28,6 +28,8 @@ class PIDController : public BaseModule
         float curr_err = 0;
         float total_err = 0;
         float prev_err = 0;
+        float time_last = 0;
+        float output = 0;
 };
 
 #endif //PID_CONTROLLER_h

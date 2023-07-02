@@ -33,6 +33,11 @@ public:
     */
     float getBrake();
 
+    /**
+     * 0 - maxSpeed
+    */
+   float getTargetSpeed();
+
 private:
     float pulseTimeToFloat(uint32_t pulse_time);
 };

@@ -11,10 +11,15 @@ void setup()
 
 void loop()
 {
+
   synchronizeModules(); 
   module_manager->loop();
+  unsigned long currentTime = millis();  // Current time in milliseconds
+
   actuation_module->actuate(vehicle_state);
-  // Serial.println();
+  prevControlTime = currentTime;
+  
+  Serial.println();
 }
 
 void setupModules()
@@ -42,14 +47,18 @@ void setupModules()
   spark_max_module = new SparkMaxModule(STEERING_OUTPUT_PIN);
   module_manager->setupModule(spark_max_module);
 
-  // brake_actuator = new BrakeActuator();
-  // module_manager->setupModule(brake_actuator);
+  brake_actuator = new BrakeActuator();
+  module_manager->setupModule(brake_actuator);
 
   actuation_module = new ActuationModule(steering_limiter, pwm_to_voltage_converter, spark_max_module, brake_actuator);
   module_manager->setupModule(actuation_module);
 
   steering_pid = new PIDController(0.03, 0, 0, -1.0, 1.0);
   module_manager->setupModule(steering_pid);
+
+
+  throttle_pid = new PIDController(0.2, 0.0, 0.0, 0.0, 1.0);
+  module_manager->setupModule(throttle_pid);
 
 
   // serial_communicator = new SerialCommunicator();
@@ -66,6 +75,7 @@ void synchronizeModules()
   vehicle_state->speed = speed_sensor->getCurrentSpeed();
 
   float target_steering_angle_deg = 0;
+  float target_speed = 0;
   if (radio_link->isAutoFromButton()) {
     // get data from serial communicator
     // vehicle_state->current_actuation->throttle = serial_communicator->getAction()->throttle;
@@ -74,14 +84,46 @@ void synchronizeModules()
     target_steering_angle_deg = serial_communicator->getAction()->steering;
   } else {
     // get data from radio link
-    vehicle_state->current_actuation->throttle = radio_link->getThrottle();
+    // vehicle_state->current_actuation->throttle = radio_link->getThrottle();
     vehicle_state->current_actuation->brake = radio_link->getBrake();
     target_steering_angle_deg = radio_link->getSteeringDeg();
+    target_speed = radio_link->getTargetSpeed();
   }
-  // vehicle_state->current_actuation->throttle = 0.1;
   // run PID
   float steering_effort = steering_pid->compute(vehicle_state->angle, target_steering_angle_deg);
+  float throttle_effort = throttle_pid->compute(vehicle_state->speed, target_speed);
+
   vehicle_state->current_actuation->steering = steering_effort; //radio_link->getSteering(); // actually sending steering
-  // Serial.print("Speed: ");
+  vehicle_state->current_actuation->throttle = throttle_effort;
+  
+  speed_sensor->update(target_speed, throttle_effort); // update speed sensor using some rough estimates
+  Serial.print(" brake: ");
+  Serial.print(vehicle_state->current_actuation->brake);
+
+  /**
+   * PID tuning
+  */
+  // Serial.print(" Current: ");
   // Serial.print(vehicle_state->speed);
+
+  // Serial.print(" Target: ");
+  // Serial.print(target_speed);
+
+  // Serial.print(" Throttle: ");
+  // Serial.print(throttle_effort);
+
+  // int val = analogRead(A5);
+  // float kp = (val - 0) / (1023.0) * (1.0);
+  // throttle_pid->kp = kp;
+  // Serial.print(" kp: ");
+  // Serial.print(throttle_pid->kp);
+
+  // val = analogRead(A4);
+  // float kd = (val - 0) / (1023.0) * (1.0);
+  // throttle_pid->kd = kd;
+  // Serial.print(" kd: ");
+  // Serial.print(throttle_pid->kd);
+
+  // Serial.print(" ki: ");
+  // Serial.print(throttle_pid->ki);
 }

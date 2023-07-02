@@ -29,6 +29,8 @@ SparkMaxModule *spark_max_module;
 ActuationModule *actuation_module;
 SerialCommunicator *serial_communicator;
 PIDController *steering_pid;
+PIDController *throttle_pid;
+
 SpeedSensor *speed_sensor;
 BrakeActuator *brake_actuator;
 
@@ -58,3 +60,5 @@ void setupModules();
  * @note this function should run BEFORE moduleManager.loop()
  */
 void synchronizeModules();
+
+unsigned long prevControlTime = 0; // Time of the previous pulse

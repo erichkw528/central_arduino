@@ -26,10 +26,20 @@ Status PIDController::cleanup() {
 float PIDController::compute(float value, float target) 
 {
     float error = target - value;
-    
-    total_err += error;
-    float output = error * this->kp + (error - prev_err) * this->kd + this->total_err * this->ki;
+    float time_now = micros();
+    float dt = (time_now - time_last)/1e6;
+    if (dt == 0) 
+    {
+       output = 0; 
+    } 
+    else
+    {
+        total_err += error; 
+        total_err = MAX(0, MIN(2, total_err));
+        output = error * this->kp + (error - prev_err)/dt * this->kd + this->total_err * this->ki;
+    }
     prev_err = error;
+    time_last = time_now;
 
-    return  CLIP(output, this->min_output, this->max_output);
+    return MAX(0, MIN(1, output)) ; //;CLIP(output, this->min_output, this->max_output);
 }
