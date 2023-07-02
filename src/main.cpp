@@ -19,7 +19,7 @@ void loop()
   actuation_module->actuate(vehicle_state);
   prevControlTime = currentTime;
   
-  Serial.println();
+  // Serial.println();
 }
 
 void setupModules()
@@ -97,12 +97,10 @@ void synchronizeModules()
   vehicle_state->current_actuation->throttle = throttle_effort;
   
   speed_sensor->update(target_speed, throttle_effort); // update speed sensor using some rough estimates
-  Serial.print(" brake: ");
-  Serial.print(vehicle_state->current_actuation->brake);
 
-  /**
-   * PID tuning
-  */
+  // /**
+  //  * PID tuning
+  // */
   // Serial.print(" Current: ");
   // Serial.print(vehicle_state->speed);
 

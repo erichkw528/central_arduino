@@ -32,4 +32,6 @@ private:
     BrakeActuator *brake_module;
     float prev_throttle = 0.0;
     float throttle_step = 0.005;
+
+    unsigned long prev_time = 0;
 };

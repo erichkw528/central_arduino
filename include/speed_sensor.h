@@ -3,7 +3,7 @@
 #define _SPEED_SENSOR_h
 #include <Arduino.h>
 #include "base_module.h"
-
+#define SPEED_QUEUE_LENGTH 10
 class SpeedSensor : public BaseModule
 {
 const float WHEEL_CIRCUMFERENCE = 5.75;   // Circumference of the wheel in inches
@@ -23,8 +23,8 @@ private:
     unsigned long prevTime = 0; // Time of the previous pulse
     unsigned long prevDebounceTime = 0;
     float currentSpeedMph = 0;
-    uint32_t speedQueueLength = 5;
-    float speedQueue[5];
+    uint32_t speedQueueLength = SPEED_QUEUE_LENGTH;
+    float speedQueue[SPEED_QUEUE_LENGTH];
     uint32_t currentIndex = 0;
     float sensorReadingMph = 0;
     void addSpeedReading(float speed);

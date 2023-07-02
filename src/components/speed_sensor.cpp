@@ -34,7 +34,6 @@ Status SpeedSensor::loop()
     sensorReadingMph = distanceMiles / (elapsedTime / 3600000.0);     // Calculate speed in mph
     currentSpeedMph = sensorReadingMph;
     addSpeedReading(currentSpeedMph);
-        // Serial.println(getCurrentSpeed());
     // }
     // Reset pulse count and previous time
     pulseCount = 0;

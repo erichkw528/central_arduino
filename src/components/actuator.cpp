@@ -51,9 +51,14 @@ void ActuationModule::p_drive(VehicleState *vehicle_state)
     Actuation *act = this->p_ensure_safety(vehicle_state->current_actuation);
     act->throttle = this->smoothThrottle(act->throttle);
     spark_max_module->writeToSteering(act->steering);
-    pwm_to_voltage_converter->writeToThrottle(act->throttle);
-    Serial.print(" brake: ");
-    Serial.print(act->brake);
+
+    // only execute throttle every 50 ms
+    unsigned long currentTime = millis();  // Current time in milliseconds
+    unsigned long elapsedDebounceTime = currentTime - prev_time;
+    if (elapsedDebounceTime > 50) {
+        pwm_to_voltage_converter->writeToThrottle(act->throttle);
+    } 
+
     brake_module->writeToBrake(act->brake);
     free(act); // MUST free allocated memory
 }
@@ -73,6 +78,5 @@ float ActuationModule::smoothThrottle(float desired_throttle)
     }
     prev_throttle = output;
     return output;
-    
 }
 
