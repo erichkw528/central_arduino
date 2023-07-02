@@ -19,7 +19,7 @@ void loop()
   actuation_module->actuate(vehicle_state);
   prevControlTime = currentTime;
   
-  Serial.println();
+  // Serial.println();
 }
 
 void setupModules()
