@@ -19,7 +19,7 @@ void loop()
   actuation_module->actuate(vehicle_state);
   prevControlTime = currentTime;
   
-  // Serial.println();
+  Serial.println();
 }
 
 void setupModules()
@@ -57,7 +57,7 @@ void setupModules()
   module_manager->setupModule(steering_pid);
 
 
-  throttle_pid = new PIDController(0.2, 0.0, 0.0, 0.0, 1.0);
+  throttle_pid = new ThrottlePIDController(0.16, 0.0, 0.07, 0.0, 1.0);
   module_manager->setupModule(throttle_pid);
 
 
@@ -98,9 +98,13 @@ void synchronizeModules()
   
   speed_sensor->update(target_speed, throttle_effort); // update speed sensor using some rough estimates
 
-  // /**
-  //  * PID tuning
-  // */
+  // Serial.print(" radioLink Steering: ");
+  // Serial.print(target_steering_angle_deg);
+  // Serial.print(" Output Steering: ");
+  // Serial.print(steering_effort);
+  /**
+   * PID tuning
+  */
   // Serial.print(" Current: ");
   // Serial.print(vehicle_state->speed);
 
@@ -116,12 +120,13 @@ void synchronizeModules()
   // Serial.print(" kp: ");
   // Serial.print(throttle_pid->kp);
 
-  // val = analogRead(A4);
-  // float kd = (val - 0) / (1023.0) * (1.0);
-  // throttle_pid->kd = kd;
+
   // Serial.print(" kd: ");
   // Serial.print(throttle_pid->kd);
 
+  // val = analogRead(A4);
+  // float kd = (val - 0) / (1023.0) * (1.0);
+  // throttle_pid->ki = kd;
   // Serial.print(" ki: ");
   // Serial.print(throttle_pid->ki);
 }

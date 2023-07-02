@@ -70,7 +70,7 @@ void SpeedSensor::pulseCounter()
     pulseCount++;
 }
 
-float SpeedSensor::getCurrentSpeed() 
+int SpeedSensor::getCurrentSpeed() 
 {
     float total = 0;
     for (size_t i = 0; i < speedQueueLength; i++)
@@ -78,8 +78,8 @@ float SpeedSensor::getCurrentSpeed()
         total+= speedQueue[i];
     }
     float avg = total / speedQueueLength;
-    
-    return avg;
+    int avg_int = (int)avg;
+    return avg_int;
 }
 
 void SpeedSensor::addSpeedReading(float speed)

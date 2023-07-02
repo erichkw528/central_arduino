@@ -16,6 +16,7 @@
 #include "pid_controller.h"
 #include "speed_sensor.h"
 #include "brake.h"
+#include "throttle_pid.h"
 
 VehicleState *vehicle_state;
 
@@ -29,7 +30,7 @@ SparkMaxModule *spark_max_module;
 ActuationModule *actuation_module;
 SerialCommunicator *serial_communicator;
 PIDController *steering_pid;
-PIDController *throttle_pid;
+ThrottlePIDController *throttle_pid;
 
 SpeedSensor *speed_sensor;
 BrakeActuator *brake_actuator;

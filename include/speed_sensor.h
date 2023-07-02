@@ -3,7 +3,7 @@
 #define _SPEED_SENSOR_h
 #include <Arduino.h>
 #include "base_module.h"
-#define SPEED_QUEUE_LENGTH 10
+#define SPEED_QUEUE_LENGTH 20
 class SpeedSensor : public BaseModule
 {
 const float WHEEL_CIRCUMFERENCE = 5.75;   // Circumference of the wheel in inches
@@ -16,7 +16,7 @@ public:
     Status setup();
     Status loop();
     Status cleanup();
-    float getCurrentSpeed();
+    int getCurrentSpeed();
     void update(float targetSpeed, float throttle_effort);
 private:
     uint32_t pin;

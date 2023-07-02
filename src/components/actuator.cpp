@@ -37,11 +37,13 @@ Actuation * ActuationModule::p_ensure_safety(Actuation *act)
 
     if (this->steering_limiter->isLeftLimiterON())
     {
+        Serial.print("LEFT LIMIT ON");
         output->steering = MIN(0, act->steering);
     }
 
     if (this->steering_limiter->isRightLimiterON())
     {
+        Serial.print("RIGHT LIMIT ON");
         output->steering = MAX(0, act->steering);
     }
     return output;

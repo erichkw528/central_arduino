@@ -1,8 +1,8 @@
-#include "pid_controller.h"
+#include "throttle_pid.h"
 #include <Arduino.h>
 #include "utilities.h"
 
-PIDController::PIDController(float kp, float kd, float ki, float min_output, float max_output)
+ThrottlePIDController::ThrottlePIDController(float kp, float kd, float ki, float min_output, float max_output)
     : kp(kp), kd(kd), ki(ki) {
         this->kp = kp;
         this->kd = kd;
@@ -11,19 +11,19 @@ PIDController::PIDController(float kp, float kd, float ki, float min_output, flo
         this->max_output = max_output;
 }
 
-Status PIDController::setup() {
+Status ThrottlePIDController::setup() {
     return Status::SUCCESS;
 }
 
-Status PIDController::loop() {
+Status ThrottlePIDController::loop() {
     return Status::SUCCESS;
 }
 
-Status PIDController::cleanup() {
+Status ThrottlePIDController::cleanup() {
     return Status::SUCCESS;
 }
 
-float PIDController::compute(float value, float target) 
+float ThrottlePIDController::compute(float value, float target) 
 {
     float error = target - value;
     float time_now = micros();
@@ -35,6 +35,15 @@ float PIDController::compute(float value, float target)
     else
     {
         total_err += error; 
+        total_err = MAX(0, MIN(2, total_err));
+        // Serial.print(" target:");
+        // Serial.print(target);
+        // Serial.print(" value:");
+        // Serial.print(target);
+        // Serial.print(" error:");
+        // Serial.print(error);
+        // Serial.print(" total_err:");
+        // Serial.print(total_err);
         output = error * this->kp + (error - prev_err)/dt * this->kd + this->total_err * this->ki;
     }
     prev_err = error;
