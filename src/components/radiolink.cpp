@@ -4,6 +4,7 @@
 
 #include "radiolink.h"
 #include "utilities.h"
+#include "macros.h"
 
 static uint32_t throttle_source_pin;
 static uint32_t steering_source_pin;
@@ -74,7 +75,7 @@ float RadioLinkModule::getTargetSpeed()
     flagValue = throttle_pulse_time; // 1000 ~ 2000
     float throttle_val = pulseTimeToFloat(flagValue); // -1 ~ 1
     float capped = throttle_val < 0 ? 0 : throttle_val; // 0 ~ 1
-    float targetSpeed = capped * MAX_SPEED;
+    float targetSpeed = capped * RADIO_LINK_MAX_SPEED_GAIN;
     // float converted = (steering_value + 1.0) / (1.0 + 1.0) * (MAX_STEERING_DEGREE - MIN_STEERING_DEGREE) + MIN_STEERING_DEGREE;
     return targetSpeed;
 }

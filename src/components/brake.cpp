@@ -81,14 +81,8 @@ void setActuatorPosition(float inputDist)
     String dpos_hi;
 
     // Clipping input range
-    if (inputDist < 0.0)
-    {
-        inputDist = 0.0;
-    }
-    if (inputDist > MAX_DIST)
-    {
-        inputDist = MAX_DIST;
-    }
+    inputDist = inputDist < MIN_BRAKE_DIST ? MIN_BRAKE_DIST : inputDist;
+    inputDist = inputDist > MAX_BRAKE_DIST ? MAX_BRAKE_DIST : inputDist;
 
     // Convert input to hex
     int intDist = inputDist * 1000 + 500; // in 0.001” steps
@@ -107,15 +101,6 @@ void setActuatorPosition(float inputDist)
 
     CAN.sendMsgBuf(COMMAND_ID, CAN_EXT_ID, CAN_RTR_BIT, data);
 }
-
-/**
- * @param brake value from 0 - 1
- */
-void writeToBrake(float brake)
-{
-    // TODO: revamp
-}
-
 
 BrakeActuator::BrakeActuator()
 {
@@ -140,7 +125,7 @@ Status BrakeActuator::cleanup()
 
 void BrakeActuator::writeToBrake(float val) {
     float brake_out = float(constrain(val, output_brake_min, output_brake_max));
-    setActuatorPosition(brake_out * MAX_DIST);
+    setActuatorPosition(brake_out * MAX_BRAKE_DIST);
 }
 
 
