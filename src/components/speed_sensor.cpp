@@ -1,5 +1,4 @@
 #include "speed_sensor.h"
-#include "macros.h"
 static volatile unsigned long pulseCount = 0;   // Number of pulses from the Hall effect sensor
 
 SpeedSensor::SpeedSensor(uint32_t speed_sensor_pin)
@@ -20,10 +19,10 @@ Status SpeedSensor::loop()
     float latest_sensor_reading = getLatestReading();
 
     // use weighted avg for all previous + current
-    float weightedAvg = (getAvgSpeed() * PREVIOUS_READING_WEIGHT + latest_sensor_reading * NEW_READING_WEIGHT) / (PREVIOUS_READING_WEIGHT + NEW_READING_WEIGHT);
-
+    float total = getTotal() * PREVIOUS_READING_WEIGHT + latest_sensor_reading * NEW_READING_WEIGHT;
+    float smoothed = total / (raw_reading_buffer.size() + 1);
     // add to the speed reading queue
-    addSpeedReading(weightedAvg);
+    addSpeedReading(smoothed);
     return Status::SUCCESS;
 
 }
@@ -64,15 +63,19 @@ void SpeedSensor::pulseCounter()
 {
     pulseCount++;
 }
-
-float SpeedSensor::getAvgSpeed() 
+float SpeedSensor::getTotal() 
 {
     float total = 0;
     for (size_t i = 0; i < raw_reading_buffer.size(); i++)
     {
         total+=raw_reading_buffer[i];
     }
-    float avg = total / raw_reading_buffer.size();
+    return total;
+}
+float SpeedSensor::getAvgSpeed() 
+{
+    
+    float avg = getTotal() / raw_reading_buffer.size();
     return avg;
 }
 

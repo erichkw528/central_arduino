@@ -50,20 +50,26 @@ void PWMVoltageConverterModule::writeToThrottle(float throttle)
 
 void PWMVoltageConverterModule::smoothWriteThrottle(float throttle)
 {
-    float prevAvg = getPrevAvg();
-    float smoothedThrottle = (prevAvg * PREV_THROTTLE_WEIGHT + throttle * CURR_THROTTLE_WEIGHT) / (PREV_THROTTLE_WEIGHT + CURR_THROTTLE_WEIGHT);
+    float prevTotal = getPrevTotal();
+    float throttleTotal = prevTotal * PREV_THROTTLE_WEIGHT + throttle * CURR_THROTTLE_WEIGHT;
+    float smoothedThrottle = throttleTotal / (buffer.size()+1);
     actuate(smoothedThrottle);
+    buffer.push(throttle);
 }
 
-float PWMVoltageConverterModule::getPrevAvg()
+float PWMVoltageConverterModule::getPrevTotal()
 {
     float total = 0;
     for (size_t i = 0; i < buffer.size(); i++)
     {
         total+=buffer[i];
     }
-    float avg = total / buffer.size();
-    return avg;
+    return total;
+}
+
+float PWMVoltageConverterModule::getPrevAvg()
+{
+    return getPrevTotal() / buffer.size();
 }
 
 

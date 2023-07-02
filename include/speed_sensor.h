@@ -4,8 +4,8 @@
 #include <Arduino.h>
 #include "base_module.h"
 #include <CircularBuffer.h>
+#include "macros.h"
 
-#define SPEED_QUEUE_LENGTH 20
 class SpeedSensor : public BaseModule
 {
 static void pulseCounter();
@@ -27,6 +27,7 @@ private:
     CircularBuffer<float, SPEED_QUEUE_LENGTH> raw_reading_buffer;
     void addSpeedReading(float speed);
     float getLatestReading();
+    float getTotal();
 
     
 };

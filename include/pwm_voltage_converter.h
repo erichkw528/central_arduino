@@ -9,8 +9,6 @@
 #include "base_module.h"
 #include "macros.h"
 
-#define THROTTLE_REQUEST_BUFFER_LENGTH 20
-
 class PWMVoltageConverterModule : public BaseModule
 {
 public:
@@ -30,6 +28,7 @@ private:
     void actuate(float throttle);
     void smoothWriteThrottle(float throttle);
     float getPrevAvg();
+    float getPrevTotal();
 
     int pin;
 

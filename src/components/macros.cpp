@@ -11,12 +11,12 @@ const float RADIO_LINK_MAX_SPEED_GAIN = 20.0;
 const float WHEEL_CIRCUMFERENCE = 5.75;   // Circumference of the wheel in inches
 const float INCHES_PER_MILE = 63360.0;     // Number of inches in a mile
 const unsigned long DEBOUNCE_DELAY = 100;  // Debounce delay in milliseconds
-const float PREVIOUS_READING_WEIGHT = 1.0; // TODO: tune this weight --> value should be between 0 ~ 1
-const float NEW_READING_WEIGHT = 1.0; // TODO: tune this weight --> value should be between 0 ~ 1
+const float PREVIOUS_READING_WEIGHT = 1.0; // TODO: tune this weight
+const float NEW_READING_WEIGHT = 1.0; // TODO: tune this weight
 
 // throttle
-const float PREV_THROTTLE_WEIGHT = 1.0; // TODO: tune this weight --> value should be between 0 ~ 1
-const float CURR_THROTTLE_WEIGHT = 1.0; // TODO: tune this weight --> value should be between 0 ~ 1
+const float PREV_THROTTLE_WEIGHT = 1.0; // TODO: tune this weight
+const float CURR_THROTTLE_WEIGHT = 1.0; // TODO: tune this weight
 
 // brake
 #define CAN_EXT_ID 1
