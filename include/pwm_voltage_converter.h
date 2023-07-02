@@ -5,16 +5,9 @@
 #define _PWM_VOLTAGE_CONVERTER_MODULE_h
 #include <Arduino.h>
 #include <pin.h>
-#include <SAMDUE_PWM.h>
+#include <CircularBuffer.h>
 #include "base_module.h"
-
-const int MAX_HZ = 3500; // ~5v
-const int MIN_HZ = 50;    // ~0v
-const int OUTPUT_THROTTLE_MAX = 2000;
-const int OUTPUT_THROTTLE_NEU = 1500;
-const int OUTPUT_THROTTLE_MIN = 1500;
-const float IDLE_FREQUENCY = 50.0f;
-const float DUTY_CYCLE = 50.0f;
+#include "macros.h"
 
 class PWMVoltageConverterModule : public BaseModule
 {
@@ -32,28 +25,13 @@ public:
     void writeToThrottle(float throttle);
 
 private:
-    void actuateFromArduinoPWM(float throttle);
+    void actuate(float throttle);
+    void smoothWriteThrottle(float throttle);
+    float getPrevAvg();
+    float getPrevTotal();
 
-    /**
-     * @brief  setup PWM to voltage converter
-     * @note
-     * @retval None
-     */
-    void setupPwmVoltageConverter();
-
-
-    float arduinoToROARConvert(int pulse_time);
-
-    SAMDUE_PWM *PWM_Instance;
     int pin;
-    const int MAX_HZ = 3500; // ~5v
-    const int MIN_HZ = 50;   // ~0v
-    const int OUTPUT_THROTTLE_MAX = 2000;
-    const int OUTPUT_THROTTLE_NEU = 1500;
-    const int OUTPUT_THROTTLE_MIN = 1500;
-    const float IDLE_FREQUENCY = 50.0f;
-    const float DUTY_CYCLE = 50.0f;
 
-    float throttle = 0.0;
+    CircularBuffer<float, THROTTLE_REQUEST_BUFFER_LENGTH> buffer;
 };
 #endif // _PWM_VOLTAGE_CONVERTER_MODULE_h
