@@ -1,12 +1,12 @@
-#ifndef PID_CONTROLLER_H
-#define PID_CONTROLLER_H
+#ifndef THROTTLE_PID_h
+#define THROTTLE_PID_h
 #include "base_module.h"
 
 #include <CircularBuffer.h>
-class PIDController : public BaseModule
+class ThrottlePIDController : public BaseModule
 {
     public: 
-        PIDController(float kp, 
+        ThrottlePIDController(float kp, 
                     float kd, 
                     float ki, 
                     float min_output, 
@@ -32,4 +32,4 @@ class PIDController : public BaseModule
         float output = 0;
 };
 
-#endif //PID_CONTROLLER_h
+#endif // THROTTLE_PID_h

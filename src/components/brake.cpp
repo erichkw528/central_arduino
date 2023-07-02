@@ -5,9 +5,11 @@
 #include <brake.h>
 
 mcp2515_can CAN(SPI_CS_PIN);
-int output_brake_max = 2000;
-int output_brake_min = 1500;
-int prev_brake = 1000;
+int output_brake_max = 1;
+int output_brake_min = 0;
+int prev_brake = 0;
+unsigned char stmp[8] = {0x0F,0x0A, 0x00, 0xC4, 0xC9,  0x00, 0x00, 0x00};
+unsigned char stmpa[8] = {0x0F,0x4A, 0x00, 0xC0, 0xC9,  0x00, 0x00, 0x00};
 
 void overwriteBuf(volatile byte *buf, int b0, int b1, int b2, int b3, int b4, int b5, int b6, int b7)
 {
@@ -48,10 +50,10 @@ void actuatorInit()
 {
     while (CAN_OK != CAN.begin(CAN_250KBPS))
     { // init can bus : baudrate = 500k
-        // Serial.println("CAN init fail, retry...");
+        Serial.println("CAN init fail, retry...");
         delay(10);
     }
-    // Serial.println("CAN init ok!");
+    Serial.println("CAN init ok!");
 
     // Disable everything
     // CAN.sendMsgBuf(COMMAND_ID, 1, 8, CLUTCH_MOTOR_OFF);
@@ -106,32 +108,39 @@ void setActuatorPosition(float inputDist)
     CAN.sendMsgBuf(COMMAND_ID, CAN_EXT_ID, CAN_RTR_BIT, data);
 }
 
-void setupBrake()
-{
-    actuatorInit();
-}
-
 /**
- * @param brake value from 1000 - 2000
+ * @param brake value from 0 - 1
  */
 void writeToBrake(float brake)
 {
     // TODO: revamp
-    float brake_out = float(constrain(brake, output_brake_min, output_brake_max));
-
-    if (brake_out != prev_brake && brake_out > 1800)
-    {
-        prev_brake = brake_out;
-        float actuator_out = map(brake_out, output_brake_min, output_brake_max, MIN_DIST, MAX_DIST);
-        setActuatorPosition(actuator_out);
-        return;
-    }
-
-    if (brake_out != prev_brake && brake_out < 1200)
-    {
-        prev_brake = brake_out;
-        float actuator_out = map(brake_out, output_brake_min, output_brake_max, MIN_DIST, MAX_DIST);
-        setActuatorPosition(actuator_out);
-        return;
-    }
 }
+
+
+BrakeActuator::BrakeActuator()
+{
+
+}
+
+Status BrakeActuator::setup()
+{
+    actuatorInit();
+    return Status::SUCCESS;
+}
+
+Status BrakeActuator::loop()
+{
+    return Status::SUCCESS;
+}
+
+Status BrakeActuator::cleanup()
+{
+    return Status::SUCCESS;
+}
+
+void BrakeActuator::writeToBrake(float val) {
+    float brake_out = float(constrain(val, output_brake_min, output_brake_max));
+    setActuatorPosition(brake_out * MAX_DIST);
+}
+
+

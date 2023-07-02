@@ -14,6 +14,9 @@
 #include "actuator.h"
 #include "SerialCommunications.h"
 #include "pid_controller.h"
+#include "speed_sensor.h"
+#include "brake.h"
+#include "throttle_pid.h"
 
 VehicleState *vehicle_state;
 
@@ -27,6 +30,10 @@ SparkMaxModule *spark_max_module;
 ActuationModule *actuation_module;
 SerialCommunicator *serial_communicator;
 PIDController *steering_pid;
+ThrottlePIDController *throttle_pid;
+
+SpeedSensor *speed_sensor;
+BrakeActuator *brake_actuator;
 
 float steering;
 /**
@@ -54,3 +61,5 @@ void setupModules();
  * @note this function should run BEFORE moduleManager.loop()
  */
 void synchronizeModules();
+
+unsigned long prevControlTime = 0; // Time of the previous pulse
