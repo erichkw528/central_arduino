@@ -72,7 +72,7 @@ void synchronizeModules()
   // vehicle_state->angular_velocity = steering_angle_sensor->getAngularVelocity();
   vehicle_state->is_left_limiter_ON = steering_limiter->isLeftLimiterON();
   vehicle_state->is_right_limiter_ON = steering_limiter->isRightLimiterON();
-  vehicle_state->speed = speed_sensor->getCurrentSpeed();
+  vehicle_state->speed = speed_sensor->getAvgSpeed();
 
   float target_steering_angle_deg = 0;
   float target_speed = 0;
@@ -96,8 +96,6 @@ void synchronizeModules()
   vehicle_state->current_actuation->steering = steering_effort; //radio_link->getSteering(); // actually sending steering
   vehicle_state->current_actuation->throttle = throttle_effort;
   
-  speed_sensor->update(target_speed, throttle_effort); // update speed sensor using some rough estimates
-
   // Serial.print(" radioLink Steering: ");
   // Serial.print(target_steering_angle_deg);
   // Serial.print(" Output Steering: ");
