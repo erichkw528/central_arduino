@@ -1,16 +1,15 @@
 #include "speed_sensor.h"
-static volatile unsigned long pulseCount = 0;   // Number of pulses from the Hall effect sensor
+static volatile unsigned long pulseCount = 0; // Number of pulses from the Hall effect sensor
 
 SpeedSensor::SpeedSensor(uint32_t speed_sensor_pin)
 {
     this->pin = speed_sensor_pin;
-    
 }
 Status SpeedSensor::setup()
 {
     attachInterrupt(this->pin, pulseCounter, CHANGE);
 
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 Status SpeedSensor::loop()
@@ -23,13 +22,12 @@ Status SpeedSensor::loop()
     float smoothed = total / (raw_reading_buffer.size() + 1);
     // add to the speed reading queue
     addSpeedReading(smoothed);
-    return Status::SUCCESS;
-
+    return Status::OK;
 }
 
 float SpeedSensor::getLatestReading()
 {
-    unsigned long currentTime = millis();  // Current time in milliseconds
+    unsigned long currentTime = millis(); // Current time in milliseconds
     unsigned long elapsedDebounceTime = currentTime - prevDebounceTime;
 
     // Read every DEBOUNCE_DELAY sec to allow sufficient time
@@ -45,36 +43,34 @@ float SpeedSensor::getLatestReading()
     unsigned long elapsedTime = currentTime - prevTime;
     float distanceInches = pulseCount * (WHEEL_CIRCUMFERENCE / 2.0);  // Calculate distance in inches
     float distanceMiles = distanceInches / INCHES_PER_MILE;           // Convert distance to miles
-    lastSensorReadingMph = distanceMiles / (elapsedTime / 3600000.0);     // Calculate speed in mph
+    lastSensorReadingMph = distanceMiles / (elapsedTime / 3600000.0); // Calculate speed in mph
 
     pulseCount = 0;
     prevTime = currentTime;
     return lastSensorReadingMph;
 }
 
-
 Status SpeedSensor::cleanup()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
-
 
 void SpeedSensor::pulseCounter()
 {
     pulseCount++;
 }
-float SpeedSensor::getTotal() 
+float SpeedSensor::getTotal()
 {
     float total = 0;
     for (size_t i = 0; i < raw_reading_buffer.size(); i++)
     {
-        total+=raw_reading_buffer[i];
+        total += raw_reading_buffer[i];
     }
     return total;
 }
-float SpeedSensor::getAvgSpeed() 
+float SpeedSensor::getAvgSpeed()
 {
-    
+
     float avg = getTotal() / raw_reading_buffer.size();
     return avg;
 }

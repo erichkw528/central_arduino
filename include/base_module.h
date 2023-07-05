@@ -12,9 +12,9 @@
  */
 enum class Status
 {
-    SUCCESS,
+    OK,
     FAILED
-}; 
+};
 
 class BaseModule
 {
@@ -42,5 +42,3 @@ public:
     virtual Status cleanup();
 };
 #endif //_BASE_MODULE_h
-
-

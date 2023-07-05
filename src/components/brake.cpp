@@ -8,8 +8,8 @@ mcp2515_can CAN(SPI_CS_PIN);
 int output_brake_max = 1;
 int output_brake_min = 0;
 int prev_brake = 0;
-unsigned char stmp[8] = {0x0F,0x0A, 0x00, 0xC4, 0xC9,  0x00, 0x00, 0x00};
-unsigned char stmpa[8] = {0x0F,0x4A, 0x00, 0xC0, 0xC9,  0x00, 0x00, 0x00};
+unsigned char stmp[8] = {0x0F, 0x0A, 0x00, 0xC4, 0xC9, 0x00, 0x00, 0x00};
+unsigned char stmpa[8] = {0x0F, 0x4A, 0x00, 0xC0, 0xC9, 0x00, 0x00, 0x00};
 
 void overwriteBuf(volatile byte *buf, int b0, int b1, int b2, int b3, int b4, int b5, int b6, int b7)
 {
@@ -44,30 +44,6 @@ String posCmdBite3Parser(int ce, int m, String dpos_hi)
 }
 
 /*
- *   Initialize the Actuator
- */
-void actuatorInit()
-{
-    while (CAN_OK != CAN.begin(CAN_250KBPS))
-    { // init can bus : baudrate = 500k
-        Serial.println("CAN init fail, retry...");
-        delay(10);
-    }
-    Serial.println("CAN init ok!");
-
-    // Disable everything
-    // CAN.sendMsgBuf(COMMAND_ID, 1, 8, CLUTCH_MOTOR_OFF);
-    // delay(20);
-
-    // // Enable clutch for loop input
-    // CAN.sendMsgBuf(COMMAND_ID, CAN_EXT_ID, CAN_RTR_BIT, CLUTCH_ON);
-    // delay(20);
-
-    // setActuatorPosition(MIN_DIST);
-    // delay(3000);
-}
-
-/*
  *   Move the Actuator to designated position in inches.
  *   The Actuator will execute whatever
  *   the latest command is immediately.
@@ -97,33 +73,56 @@ void setActuatorPosition(float inputDist)
 
     // Clutch on, Motor on and move to the desired position
     bite3 = posCmdBite3Parser(1, 1, dpos_hi);
-    overwriteBuf(data, 0x0F, 0x4A, strHexToInt(const_cast<char *>(bite2.c_str())), strHexToInt(const_cast<char *>(bite3.c_str())), 0, 0, 0, 0);
+    overwriteBuf(data, 0x0F, 0x4A, strHexToInt(const_cast<char *>(bite2.c_str())),
+                 strHexToInt(const_cast<char *>(bite3.c_str())), 0, 0, 0, 0);
 
     CAN.sendMsgBuf(COMMAND_ID, CAN_EXT_ID, CAN_RTR_BIT, data);
 }
 
 BrakeActuator::BrakeActuator()
 {
-
 }
 
 Status BrakeActuator::setup()
 {
-    actuatorInit();
-    return Status::SUCCESS;
+    if (CAN_OK == CAN.begin(CAN_250KBPS))
+    { // init can bus : baudrate = 500k
+        isCANConnected = true;
+        Serial.println("CAN init ok!");
+    }
+    else
+    {
+        isCANConnected = false;
+        Serial.println("CAN init failed!");
+    }
+    return Status::OK;
 }
 
 Status BrakeActuator::loop()
 {
-    return Status::SUCCESS;
+    if (!isCANConnected)
+    {
+        if (CAN_OK == CAN.begin(CAN_250KBPS))
+        { // init can bus : baudrate = 500k
+            isCANConnected = true;
+            Serial.println("CAN init ok!");
+        }
+        else
+        {
+            isCANConnected = false;
+        }
+    }
+
+    return Status::OK;
 }
 
 Status BrakeActuator::cleanup()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
-void BrakeActuator::writeToBrake(float val) {
+void BrakeActuator::writeToBrake(float val)
+{
     float brake_out = float(constrain(val, output_brake_min, output_brake_max));
     float scaleBrakeOutput = map((brake_out*10000),0,10000,20000,25600);
     if (brake_out==0){
@@ -131,5 +130,3 @@ void BrakeActuator::writeToBrake(float val) {
     }
     setActuatorPosition(scaleBrakeOutput/10000);
 }
-
-

@@ -11,28 +11,27 @@ SteeringLimiter::SteeringLimiter(uint32_t left_pin, uint32_t right_pin)
     this->right_limiter_pin = right_pin;
 }
 
-Status 
+Status
 SteeringLimiter::setup()
 {
     pinMode(this->left_limiter_pin, INPUT_PULLUP);
     pinMode(this->right_limiter_pin, INPUT_PULLUP);
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
-Status 
+Status
 SteeringLimiter::loop()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
-Status 
+Status
 SteeringLimiter::cleanup()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
-bool
-SteeringLimiter::isLimiterOn(uint32_t pin)
+bool SteeringLimiter::isLimiterOn(uint32_t pin)
 {
     if (digitalRead(pin) == HIGH)
     {
@@ -41,8 +40,7 @@ SteeringLimiter::isLimiterOn(uint32_t pin)
     }
     return true;
 }
-bool
-SteeringLimiter::isLeftLimiterON()
+bool SteeringLimiter::isLeftLimiterON()
 {
     return this->isLimiterOn(this->left_limiter_pin);
 }

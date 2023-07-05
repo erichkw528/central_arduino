@@ -12,7 +12,7 @@ Status SteeringAngleSensor::setup()
 {
     if (this->pin)
     {
-        return Status::SUCCESS;
+        return Status::OK;
     }
     return Status::FAILED;
 }
@@ -23,7 +23,7 @@ Status SteeringAngleSensor::loop()
     {
         return Status::FAILED;
     }
-    
+
     float sensorValue = analogRead(this->pin);
     // Serial.print(" Sensor Value: ");
     // Serial.print(sensorValue);
@@ -35,7 +35,7 @@ Status SteeringAngleSensor::loop()
     this->addReading(this->currentAngle);
     this->currentAngularVelocity = this->calcVelocity();
 
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 void SteeringAngleSensor::addReading(float reading)
@@ -46,17 +46,19 @@ void SteeringAngleSensor::addReading(float reading)
 
 float SteeringAngleSensor::calcVelocity()
 {
-    if (reading_buffer.size() != STEERING_ANGLE_BUFFER_LEN || timestamp_buffer.size() != STEERING_ANGLE_BUFFER_LEN) {
+    if (reading_buffer.size() != STEERING_ANGLE_BUFFER_LEN || timestamp_buffer.size() != STEERING_ANGLE_BUFFER_LEN)
+    {
         return 0.0;
     }
     // find the earliest timestamp
     uint32_t min_timestamp_index = -1;
     uint32_t min_timestamp = millis();
-    for (uint32_t i = 0; i < timestamp_buffer.size(); i ++)
+    for (uint32_t i = 0; i < timestamp_buffer.size(); i++)
     {
-        if (timestamp_buffer[i] < min_timestamp) {
+        if (timestamp_buffer[i] < min_timestamp)
+        {
             min_timestamp_index = i;
-        }   
+        }
     }
     // find average velocity between each pair
     float total = 0;
@@ -79,7 +81,7 @@ float SteeringAngleSensor::calcVelocity()
 
 Status SteeringAngleSensor::cleanup()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 float SteeringAngleSensor::getSteeringAngle()

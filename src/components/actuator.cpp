@@ -1,10 +1,9 @@
 #include "actuator.h"
-#include "utilities.h"
+
 ActuationModule::ActuationModule(SteeringLimiter *limiter,
                                  PWMVoltageConverterModule *pwm_to_voltage_converter,
                                  SparkMaxModule *spark_max_module,
-                                 BrakeActuator *brake_module
-                                 )
+                                 BrakeActuator *brake_module)
 {
     this->steering_limiter = limiter;
     this->pwm_to_voltage_converter = pwm_to_voltage_converter;
@@ -14,20 +13,20 @@ ActuationModule::ActuationModule(SteeringLimiter *limiter,
 
 Status ActuationModule::setup()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 Status ActuationModule::loop()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 Status ActuationModule::cleanup()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
-Actuation * ActuationModule::p_ensure_safety(Actuation *act)
+Actuation *ActuationModule::p_ensure_safety(Actuation *act)
 {
     Actuation *output = new Actuation();
     output->brake = act->brake;
@@ -37,12 +36,12 @@ Actuation * ActuationModule::p_ensure_safety(Actuation *act)
 
     if (this->steering_limiter->isLeftLimiterON())
     {
-        output->steering = MIN(0, act->steering);
+        output->steering = act->steering < 0 ? 0 : act->steering;
     }
 
     if (this->steering_limiter->isRightLimiterON())
     {
-        output->steering = MAX(0, act->steering);
+        output->steering = act->steering > 0 ? 0 : act->steering;
     }
     return output;
 }

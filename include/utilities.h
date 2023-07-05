@@ -1,6 +1,6 @@
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-template <typename T>
-T CLIP(T value, T min, T max) {
-    return MAX(min, MIN(value, max));
-}
+#ifndef _UTILITIES_H
+#define _UTILITIES_H
+
+float clip(float value, float min_val, float max_val);
+
+#endif //_UTILITIES_H
