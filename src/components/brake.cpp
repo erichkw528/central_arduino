@@ -81,6 +81,7 @@ void setActuatorPosition(float inputDist)
 
 BrakeActuator::BrakeActuator()
 {
+    this->name = "BrakeActuator";
 }
 
 Status BrakeActuator::setup()

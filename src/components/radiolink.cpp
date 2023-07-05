@@ -38,6 +38,7 @@ RadioLinkModule::RadioLinkModule(uint32_t throttle_pin, uint32_t steering_pin, u
     steering_pulse_time = 1500;
     knob_pulse_time = 1500;
     button_pulse_time = 1500;
+    this->name = "RadioLinkModule";
 }
 Status RadioLinkModule::setup()
 {

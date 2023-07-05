@@ -10,6 +10,7 @@ PIDController::PIDController(float kp, float kd, float ki, float min_output, flo
     this->ki = ki;
     this->min_output = min_output;
     this->max_output = max_output;
+    this->name = "PIDController";
 }
 
 Status PIDController::setup()

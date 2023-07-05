@@ -3,6 +3,7 @@ int output_steering_pwm = 1500;
 SparkMaxModule::SparkMaxModule(uint32_t pin)
 {
     this->pin = pin;
+    this->name = "SparkMaxModule";
 }
 
 Status SparkMaxModule::setup()

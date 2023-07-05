@@ -9,6 +9,7 @@ ActuationModule::ActuationModule(SteeringLimiter *limiter,
     this->pwm_to_voltage_converter = pwm_to_voltage_converter;
     this->spark_max_module = spark_max_module;
     this->brake_module = brake_module;
+    this->name = "ActuationModule";
 }
 
 Status ActuationModule::setup()

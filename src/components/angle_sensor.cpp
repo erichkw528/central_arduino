@@ -6,6 +6,7 @@
 SteeringAngleSensor::SteeringAngleSensor(int pin)
 {
     this->pin = pin;
+    this->name = "SteeringAngleSensor";
 }
 
 Status SteeringAngleSensor::setup()

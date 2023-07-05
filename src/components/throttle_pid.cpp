@@ -10,6 +10,7 @@ ThrottlePIDController::ThrottlePIDController(float kp, float kd, float ki, float
     this->ki = ki;
     this->min_output = min_output;
     this->max_output = max_output;
+    this->name = "ThrottlePIDController";
 }
 
 Status ThrottlePIDController::setup()

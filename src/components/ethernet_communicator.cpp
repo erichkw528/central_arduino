@@ -3,7 +3,6 @@
 // license that can be found in the LICENSE file.
 #include <Arduino.h>
 #include <cstring> // Include the <cstring> header for memcpy
-#include <ArduinoJson.h>
 #include "ethernet_communicator.h"
 #define UDP_PACKET_MAX_SIZE_CUSTOM 128
 byte mac[] = {
@@ -15,6 +14,7 @@ EthernetUDP Udp;
 
 EthernetCommunicator::EthernetCommunicator()
 {
+    this->name = "Ethernet Communicator";
 }
 Status EthernetCommunicator::setup()
 {
@@ -26,14 +26,27 @@ Status EthernetCommunicator::loop()
 {
     // if there's data available, read a packet
     int packetSize = Udp.parsePacket();
-    if (packetSize)
+    if (packetSize == 0)
     {
-        this->readUDP();
-
-        this->writeStateToUDP();
+        return Status::OK;
     }
 
-    return Status::OK;
+    // PC sent request to read state
+    if (packetSize == 1)
+    {
+        Udp.read(packetBuffer, UDP_PACKET_MAX_SIZE_CUSTOM);
+        this->writeStateToUDP();
+        return Status::OK;
+    }
+
+    // PC tells arduino actuation
+    if (packetSize > 1)
+    {
+        this->readUDP();
+        return Status::OK;
+    }
+
+    return Status::FAILED;
 }
 Status EthernetCommunicator::cleanup()
 {
@@ -45,7 +58,7 @@ void EthernetCommunicator::setVehicleState(VehicleState state)
     this->latest_vehicle_state = state;
 }
 
-ActuationModelFromEthernet EthernetCommunicator::getAction()
+EthernetCommunicator::ActuationModelFromEthernet EthernetCommunicator::getAction()
 {
     return this->actuation_received;
 }
@@ -72,13 +85,47 @@ void EthernetCommunicator::writeStateToUDP()
     Udp.endPacket();
 }
 
-ActuationModelFromEthernet EthernetCommunicator::readUDP()
+EthernetCommunicator::ActuationModelFromEthernet EthernetCommunicator::readUDP()
 {
-    Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
+    Udp.read(packetBuffer, UDP_PACKET_MAX_SIZE_CUSTOM);
+    DeserializationError error;
+    ActuationModelFromEthernet act = this->parseJSONData(error);
 
-    Serial.println("Contents:");
-    Serial.println(packetBuffer);
+    if (error != DeserializationError::Ok)
+    {
+        Serial.println("ERROR");
+        ActuationModelFromEthernet default_act;
+        return default_act;
+    }
 
+    return act;
+}
+
+EthernetCommunicator::ActuationModelFromEthernet EthernetCommunicator::parseJSONData(DeserializationError &error)
+{
     ActuationModelFromEthernet act;
+    StaticJsonDocument<200> doc;
+
+    error = deserializeJson(doc, packetBuffer);
+
+    if (error)
+    {
+        Serial.print("JSON parsing failed: ");
+        Serial.println(error.c_str());
+        return act; // Failed to parse JSON, return default actuation model
+    }
+
+    if (!doc.containsKey("target_speed") || !doc.containsKey("steering_angle") || !doc.containsKey("brake") || !doc.containsKey("reverse"))
+    {
+        Serial.println("Missing required fields in JSON");
+        return act; // Missing required fields, return default actuation model
+    }
+
+    // Accessing JSON data and populating the actuation model object
+    act.targetSpeed = doc["target_speed"].as<float>();
+    act.steeringAngle = doc["steering_angle"].as<float>();
+    act.brake = doc["brake"].as<float>();
+    act.reverse = doc["reverse"].as<bool>();
+    printActuationModel(act);
     return act;
 }

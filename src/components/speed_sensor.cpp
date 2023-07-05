@@ -4,6 +4,7 @@ static volatile unsigned long pulseCount = 0; // Number of pulses from the Hall 
 SpeedSensor::SpeedSensor(uint32_t speed_sensor_pin)
 {
     this->pin = speed_sensor_pin;
+    this->name = "SpeedSensor";
 }
 Status SpeedSensor::setup()
 {

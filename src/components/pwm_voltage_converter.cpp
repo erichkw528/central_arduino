@@ -10,6 +10,7 @@
 PWMVoltageConverterModule::PWMVoltageConverterModule(int pin)
 {
     this->pin = pin;
+    this->name = "PWMVoltageConverterModule";
 }
 Status PWMVoltageConverterModule::setup()
 {

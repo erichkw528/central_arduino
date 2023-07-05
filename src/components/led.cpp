@@ -12,6 +12,7 @@ LEDModule::LEDModule(int pin)
     this->blink_interval = 500;
     this->last_blink_time = millis();
     this->mode = LEDMode::SYSTEM_ERROR;
+    this->name = "LEDModule";
 }
 
 Status LEDModule::setup()

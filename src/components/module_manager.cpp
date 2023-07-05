@@ -8,7 +8,12 @@ Status ModuleManager::loop()
 {
     for (BaseModule *module : this->modules)
     {
-        module->loop();
+        Status s = module->loop();
+        if (s == Status::FAILED)
+        {
+            Serial.print("Failed: ");
+            Serial.println(module->name);
+        }
     }
     return Status::OK;
 }

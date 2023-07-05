@@ -9,6 +9,7 @@ SteeringLimiter::SteeringLimiter(uint32_t left_pin, uint32_t right_pin)
 {
     this->left_limiter_pin = left_pin;
     this->right_limiter_pin = right_pin;
+    this->name = "SteeringLimiter";
 }
 
 Status
