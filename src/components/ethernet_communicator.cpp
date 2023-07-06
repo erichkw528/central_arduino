@@ -64,21 +64,16 @@ EthernetCommunicator::ActuationModelFromEthernet EthernetCommunicator::getAction
 }
 void EthernetCommunicator::writeStateToUDP()
 {
-    VehicleState vehicleState;
-    vehicleState.angle = 45.0f;
-    vehicleState.speed = 100.0f;
-    vehicleState.steering = 20.0f;
-
     DynamicJsonDocument jsonDocument(512);
 
     JsonObject root = jsonDocument.to<JsonObject>();
-    root["is_auto"] = vehicleState.is_auto;
-    root["is_left_limiter_ON"] = vehicleState.is_left_limiter_ON;
-    root["is_right_limiter_ON"] = vehicleState.is_right_limiter_ON;
-    root["angle"] = vehicleState.angle;
-    root["angular_velocity"] = vehicleState.angular_velocity;
-    root["speed"] = vehicleState.speed;
-    root["steering"] = vehicleState.steering;
+    root["is_auto"] = this->latest_vehicle_state.is_auto;
+    root["is_left_limiter_ON"] = this->latest_vehicle_state.is_left_limiter_ON;
+    root["is_right_limiter_ON"] = this->latest_vehicle_state.is_right_limiter_ON;
+    root["angle"] = this->latest_vehicle_state.angle;
+    root["angular_velocity"] = this->latest_vehicle_state.angular_velocity;
+    root["speed"] = this->latest_vehicle_state.speed;
+    root["steering"] = this->latest_vehicle_state.steering;
 
     Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
     serializeJson(jsonDocument, Udp);
