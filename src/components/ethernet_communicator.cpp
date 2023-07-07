@@ -82,10 +82,6 @@ void EthernetCommunicator::writeStateToUDP()
     current_actuation["brake"] = this->latest_vehicle_state.current_actuation->brake;
     current_actuation["reverse"] = this->latest_vehicle_state.current_actuation->reverse;
 
-    Serial.print(" act.throttle = ");
-    Serial.print(this->latest_vehicle_state.current_actuation->throttle);
-    Serial.println();
-
     Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
     serializeJson(jsonDocument, Udp);
     Udp.endPacket();
