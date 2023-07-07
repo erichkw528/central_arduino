@@ -200,7 +200,7 @@ void RadioLinkModule::calcButtonSignal()
 
 bool RadioLinkModule::isAutoFromButton()
 {
-    return button_pulse_time >= 1600;
+    return true; // button_pulse_time >= 1600;
 }
 
 float RadioLinkModule::pulseTimeToFloat(uint32_t pulse_time)

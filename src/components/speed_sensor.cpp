@@ -1,4 +1,5 @@
 #include "speed_sensor.h"
+
 static volatile unsigned long pulseCount = 0; // Number of pulses from the Hall effect sensor
 
 SpeedSensor::SpeedSensor(uint32_t speed_sensor_pin)
@@ -71,8 +72,12 @@ float SpeedSensor::getTotal()
 }
 float SpeedSensor::getAvgSpeed()
 {
-
     float avg = getTotal() / raw_reading_buffer.size();
+    if (std::isnan(avg))
+    {
+        return 0.0;
+    }
+
     return avg;
 }
 

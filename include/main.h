@@ -17,23 +17,22 @@
 #include "speed_sensor.h"
 #include "brake.h"
 #include "throttle_pid.h"
+#include <pidcontroller.h>
 
-VehicleState* vehicle_state;
+VehicleState *vehicle_state;
 
-ModuleManager* module_manager;
-LEDModule* led_module;
-SteeringAngleSensor* steering_angle_sensor;
-PWMVoltageConverterModule* pwm_to_voltage_converter;
-RadioLinkModule* radio_link;
-SteeringLimiter* steering_limiter;
-SparkMaxModule* spark_max_module;
-ActuationModule* actuation_module;
-EthernetCommunicator* ethernet_communicator;
-PIDController* steering_pid;
-ThrottlePIDController* throttle_pid;
+ModuleManager *module_manager;
+LEDModule *led_module;
+SteeringAngleSensor *steering_angle_sensor;
+PWMVoltageConverterModule *pwm_to_voltage_converter;
+RadioLinkModule *radio_link;
+SteeringLimiter *steering_limiter;
+SparkMaxModule *spark_max_module;
+ActuationModule *actuation_module;
+EthernetCommunicator *ethernet_communicator;
 
-SpeedSensor* speed_sensor;
-BrakeActuator* brake_actuator;
+SpeedSensor *speed_sensor;
+BrakeActuator *brake_actuator;
 
 float steering;
 /**
@@ -60,5 +59,3 @@ void setupModules();
  * @note this function should run BEFORE moduleManager.loop()
  */
 void synchronizeModules();
-
-unsigned long prevControlTime = 0;  // Time of the previous pulse

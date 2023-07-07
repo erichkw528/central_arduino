@@ -42,7 +42,7 @@ Status EthernetCommunicator::loop()
     // PC tells arduino actuation
     if (packetSize > 1)
     {
-        this->readUDP();
+        actuation_received = this->readUDP();
         return Status::OK;
     }
 
@@ -62,6 +62,7 @@ EthernetCommunicator::ActuationModelFromEthernet EthernetCommunicator::getAction
 {
     return this->actuation_received;
 }
+
 void EthernetCommunicator::writeStateToUDP()
 {
     DynamicJsonDocument jsonDocument(512);
@@ -70,10 +71,20 @@ void EthernetCommunicator::writeStateToUDP()
     root["is_auto"] = this->latest_vehicle_state.is_auto;
     root["is_left_limiter_ON"] = this->latest_vehicle_state.is_left_limiter_ON;
     root["is_right_limiter_ON"] = this->latest_vehicle_state.is_right_limiter_ON;
-    root["angle"] = this->latest_vehicle_state.angle;
-    root["angular_velocity"] = this->latest_vehicle_state.angular_velocity;
-    root["speed"] = this->latest_vehicle_state.speed;
-    root["steering"] = this->latest_vehicle_state.steering;
+    root["angle"] = this->latest_vehicle_state.current_angle;
+    root["angular_velocity"] = this->latest_vehicle_state.current_angular_velocity;
+    root["speed"] = this->latest_vehicle_state.current_speed;
+    // Create a nested JSON object for current_actuation
+    JsonObject current_actuation = root.createNestedObject("current_actuation");
+
+    current_actuation["throttle"] = this->latest_vehicle_state.current_actuation->throttle;
+    current_actuation["steering"] = this->latest_vehicle_state.current_actuation->steering;
+    current_actuation["brake"] = this->latest_vehicle_state.current_actuation->brake;
+    current_actuation["reverse"] = this->latest_vehicle_state.current_actuation->reverse;
+
+    Serial.print(" act.throttle = ");
+    Serial.print(this->latest_vehicle_state.current_actuation->throttle);
+    Serial.println();
 
     Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
     serializeJson(jsonDocument, Udp);
@@ -94,6 +105,14 @@ EthernetCommunicator::ActuationModelFromEthernet EthernetCommunicator::readUDP()
     }
 
     return act;
+}
+
+void printJsonStatic(const StaticJsonDocument<200> &doc)
+{
+    String jsonString;
+    serializeJsonPretty(doc, jsonString);
+    Serial.print(doc.size());
+    Serial.print(jsonString);
 }
 
 EthernetCommunicator::ActuationModelFromEthernet EthernetCommunicator::parseJSONData(DeserializationError &error)
@@ -121,6 +140,9 @@ EthernetCommunicator::ActuationModelFromEthernet EthernetCommunicator::parseJSON
     act.steeringAngle = doc["steering_angle"].as<float>();
     act.brake = doc["brake"].as<float>();
     act.reverse = doc["reverse"].as<bool>();
-    printActuationModel(act);
+    // Serial.print("Time: ");
+    // Serial.print(millis());
+    // Serial.print(" Received command from Ethernet: ");
+    // printActuationModel(act);
     return act;
 }

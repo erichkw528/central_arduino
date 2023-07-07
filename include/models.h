@@ -23,16 +23,15 @@ struct Actuation
 
 struct VehicleState
 {
-    Actuation *manual_actuation = new Actuation();
-    Actuation *auto_actuation = new Actuation();
     Actuation *current_actuation = new Actuation();
     bool is_auto = false;
     bool is_left_limiter_ON = false;
     bool is_right_limiter_ON = false;
-    float angle = 0.0;
-    float angular_velocity = 0.0;
-    float speed = 0.0;
+    float current_angle = 0.0;
+    float current_angular_velocity = 0.0;
+    float current_speed = 0.0;
 
-    float steering = 0.0;
+    float target_speed = 0.0;
+    float target_steering_angle = 0.0;
 };
 #endif //_MODELS_h

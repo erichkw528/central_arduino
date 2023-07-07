@@ -47,7 +47,7 @@ private:
     Serial.print(", Brake: ");
     Serial.print(act.brake);
     Serial.print(", Reverse: ");
-    Serial.println(act.reverse);
+    Serial.print(act.reverse);
   }
   // char receivedChars[32]; // make sure this is the same as numChars
   // boolean newData = false;
