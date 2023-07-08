@@ -74,6 +74,8 @@ void EthernetCommunicator::writeStateToUDP()
     root["angle"] = this->latest_vehicle_state.current_angle;
     root["angular_velocity"] = this->latest_vehicle_state.current_angular_velocity;
     root["speed"] = this->latest_vehicle_state.current_speed;
+    root["target_speed"] = this->latest_vehicle_state.target_speed;
+    root["target_steering_angle"] = this->latest_vehicle_state.target_steering_angle;
     // Create a nested JSON object for current_actuation
     JsonObject current_actuation = root.createNestedObject("current_actuation");
 
@@ -136,9 +138,9 @@ EthernetCommunicator::ActuationModelFromEthernet EthernetCommunicator::parseJSON
     act.steeringAngle = doc["steering_angle"].as<float>();
     act.brake = doc["brake"].as<float>();
     act.reverse = doc["reverse"].as<bool>();
-    // Serial.print("Time: ");
-    // Serial.print(millis());
-    // Serial.print(" Received command from Ethernet: ");
-    // printActuationModel(act);
+    Serial.print("Time: ");
+    Serial.print(millis());
+    Serial.print(" Received command from Ethernet: ");
+    printActuationModel(act);
     return act;
 }
