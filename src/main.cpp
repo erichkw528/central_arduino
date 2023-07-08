@@ -96,11 +96,11 @@ void setupModules()
     actuation_module = new ActuationModule(steering_limiter, pwm_to_voltage_converter, spark_max_module, brake_actuator);
     module_manager->setupModule(actuation_module);
 
-    // steering_pid = new PIDController(0.03, 0, 0, -1.0, 1.0);
-    // module_manager->setupModule(steering_pid);
+    steering_pid = new PIDController(0.03, 0, 0, -1.0, 1.0);
+    module_manager->setupModule(steering_pid);
 
-    // throttle_pid = new ThrottlePIDController(0.16, 0.0, 0.07, 0.0, 1.0);
-    // module_manager->setupModule(throttle_pid);
+    throttle_pid = new ThrottlePIDController(0.16, 0.0, 0.07, 0.0, 1.0);
+    module_manager->setupModule(throttle_pid);
 
     ethernet_communicator = new EthernetCommunicator();
     module_manager->setupModule(ethernet_communicator);
@@ -135,6 +135,11 @@ void synchronizeModules()
         target_steering_angle_deg = radio_link->getSteeringDeg();
         target_speed = radio_link->getTargetSpeed();
     }
-    vehicle_state->target_speed = target_speed;
-    vehicle_state->target_steering_angle = target_steering_angle_deg;
+
+    // run PID
+    float steering_effort = steering_pid->compute(vehicle_state->current_angle, target_steering_angle_deg);
+    float throttle_effort = throttle_pid->compute(vehicle_state->current_speed, target_speed);
+
+    vehicle_state->current_actuation->steering = steering_effort;
+    vehicle_state->current_actuation->throttle = throttle_effort;
 }

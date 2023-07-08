@@ -17,7 +17,7 @@
 #include "speed_sensor.h"
 #include "brake.h"
 #include "throttle_pid.h"
-#include <pidcontroller.h>
+#include "pid_controller.h"
 
 VehicleState *vehicle_state;
 
@@ -33,6 +33,8 @@ EthernetCommunicator *ethernet_communicator;
 
 SpeedSensor *speed_sensor;
 BrakeActuator *brake_actuator;
+PIDController *steering_pid;
+ThrottlePIDController *throttle_pid;
 
 float steering;
 /**

@@ -28,8 +28,4 @@ private:
     PWMVoltageConverterModule *pwm_to_voltage_converter;
     SparkMaxModule *spark_max_module;
     BrakeActuator *brake_module;
-    unsigned long previousMillis = 0;
-    const unsigned long interval = 50; // Time interval in milliseconds
-    PID steeringPID;
-    PID throttlePID;
 };
