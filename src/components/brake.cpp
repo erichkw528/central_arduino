@@ -125,7 +125,11 @@ Status BrakeActuator::cleanup()
 
 void BrakeActuator::writeToBrake(float val) {
     float brake_out = float(constrain(val, output_brake_min, output_brake_max));
-    setActuatorPosition(brake_out * MAX_BRAKE_DIST);
+    float scaleBrakeOutput = map((brake_out*10000),0,10000,20000,25600);
+    if (brake_out==0){
+        scaleBrakeOutput = 0;
+    }
+    setActuatorPosition(scaleBrakeOutput/10000);
 }
 
 

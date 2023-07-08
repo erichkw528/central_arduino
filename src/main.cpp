@@ -57,7 +57,7 @@ void setupModules()
   module_manager->setupModule(steering_pid);
 
 
-  throttle_pid = new ThrottlePIDController(0.16, 0.0, 0.07, 0.0, 1.0);
+  throttle_pid = new ThrottlePIDController(0.14, 0.07, 0.07, 0.0, 1.0);
   module_manager->setupModule(throttle_pid);
 
 
@@ -103,28 +103,37 @@ void synchronizeModules()
   /**
    * PID tuning
   */
-  // Serial.print(" Current: ");
-  // Serial.print(vehicle_state->speed);
+  //  Serial.print(" Current: ");
+  //  Serial.print(vehicle_state->speed);
 
-  // Serial.print(" Target: ");
-  // Serial.print(target_speed);
+  //  Serial.print(" Target: ");
+  //  Serial.print(target_speed);
 
-  // Serial.print(" Throttle: ");
-  // Serial.print(throttle_effort);
+  //  Serial.print(" Throttle: ");
+  //  Serial.println(throttle_effort);
+  
 
-  // int val = analogRead(A5);
-  // float kp = (val - 0) / (1023.0) * (1.0);
-  // throttle_pid->kp = kp;
-  // Serial.print(" kp: ");
-  // Serial.print(throttle_pid->kp);
+   
+  //  int val = analogRead(A5);
+  //  float kp = (val - 0) / (1023.0) * (1.0);
+  //  throttle_pid->kp = kp;
+  //  Serial.print(" kp: ");
+  //  Serial.print(throttle_pid->kp);
 
 
-  // Serial.print(" kd: ");
-  // Serial.print(throttle_pid->kd);
+  //  Serial.print(" ki: ");
+  //  Serial.print(throttle_pid->ki);
+   
+   //val = analogRead(A4);
+   //float ki = (val - 0) / (1023.0) * (1.0);
+   //throttle_pid->ki = ki;
+   ////Serial.print(" ki: ");
+   //Serial.print(throttle_pid->ki);
 
-  // val = analogRead(A4);
-  // float kd = (val - 0) / (1023.0) * (1.0);
-  // throttle_pid->ki = kd;
-  // Serial.print(" ki: ");
-  // Serial.print(throttle_pid->ki);
+
+  //  val = analogRead(A4);
+  //  float kd = (val - 0) / (1023.0) * (1.0);
+  //  throttle_pid->kd = kd;
+  //  Serial.print(" kd: ");
+  //  Serial.print(throttle_pid->kd);
 }
