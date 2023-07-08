@@ -33,5 +33,6 @@ struct VehicleState
 
     float target_speed = 0.0;
     float target_steering_angle = 0.0;
+    bool should_prime_brake = false;
 };
 #endif //_MODELS_h

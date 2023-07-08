@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 #include <brake.h>
+#include <macros.h>
 
 mcp2515_can CAN(SPI_CS_PIN);
 int output_brake_max = 1;
@@ -122,6 +123,10 @@ Status BrakeActuator::cleanup()
     return Status::OK;
 }
 
+void BrakeActuator::setSpeedError(float error)
+{
+    this->latestSpeedError = error;
+}
 void BrakeActuator::writeToBrake(float val)
 {
     float brake_out = float(constrain(val, output_brake_min, output_brake_max));
@@ -129,5 +134,11 @@ void BrakeActuator::writeToBrake(float val)
     if (brake_out==0){
         scaleBrakeOutput = 0;
     }
-    setActuatorPosition(scaleBrakeOutput/10000);
+    
+    if (latestSpeedError < MIN_EFFECTIVE_SPEED_FOR_BRAKE)
+    {
+        scaleBrakeOutput = 20000;
+    } 
+    float brake_output = scaleBrakeOutput/10000;
+    setActuatorPosition(brake_output);
 }

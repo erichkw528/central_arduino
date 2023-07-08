@@ -62,10 +62,9 @@ void synchronizeModules()
 {
     // get data from angle sensor, steering limiter and update vehicle state
     vehicle_state->current_angle = steering_angle_sensor->getSteeringAngle();
-    // vehicle_state->angular_velocity = steering_angle_sensor->getAngularVelocity();
+    vehicle_state->current_angular_velocity = steering_angle_sensor->getAngularVelocity();
     vehicle_state->is_left_limiter_ON = steering_limiter->isLeftLimiterON();
     vehicle_state->is_right_limiter_ON = steering_limiter->isRightLimiterON();
-
     vehicle_state->current_speed = speed_sensor->getAvgSpeed();
 
     float target_steering_angle_deg = 0;
@@ -88,18 +87,16 @@ void synchronizeModules()
         target_steering_angle_deg = radio_link->getSteeringDeg();
         target_speed = radio_link->getTargetSpeed();
     }
-
+    // set state
+    vehicle_state->target_speed = target_speed;
+    vehicle_state->target_steering_angle = target_steering_angle_deg;
     // run PID
     float steering_effort = steering_pid->compute(vehicle_state->current_angle, target_steering_angle_deg);
     float throttle_effort = throttle_pid->compute(vehicle_state->current_speed, target_speed);
 
-    Serial.print(" vehicle_state->current_speed: ");
-    Serial.print(vehicle_state->current_speed);
-    Serial.print(" target_speed: ");
-    Serial.print(target_speed);    
-    Serial.print(" throttle_effort: ");
-    Serial.print(throttle_effort);
-    Serial.println();
     vehicle_state->current_actuation->steering = steering_effort;
     vehicle_state->current_actuation->throttle = throttle_effort;
+
+    brake_actuator->setSpeedError(abs(vehicle_state->current_speed-vehicle_state->target_speed));
+    
 }

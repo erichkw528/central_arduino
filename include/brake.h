@@ -23,6 +23,7 @@ public:
   Status setup();
   Status loop();
   Status cleanup();
+  void setSpeedError(float error);
   /**
    * 0 ~ 1
    */
@@ -30,6 +31,7 @@ public:
 
 private:
   bool isCANConnected = false;
+  float latestSpeedError = 0.0;
 };
 
 #endif  // BRAKE_h
