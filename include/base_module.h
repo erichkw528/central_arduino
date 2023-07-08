@@ -4,7 +4,7 @@
 #ifndef _BASE_MODULE_h
 #define _BASE_MODULE_h
 #include "models.h"
-
+#include <Arduino.h>
 /**
  * @brief Enumeration of possible statuses that the module can return
  * @note SUCCESS - The module has completed function
@@ -12,9 +12,9 @@
  */
 enum class Status
 {
-    SUCCESS,
+    OK,
     FAILED
-}; 
+};
 
 class BaseModule
 {
@@ -40,7 +40,7 @@ public:
      * @retval Status - Enumeration indicating if the cleanup was successful or not
      */
     virtual Status cleanup();
+
+    String name = "default";
 };
 #endif //_BASE_MODULE_h
-
-

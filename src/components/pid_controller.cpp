@@ -12,15 +12,15 @@ PIDController::PIDController(float kp, float kd, float ki, float min_output, flo
 }
 
 Status PIDController::setup() {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 Status PIDController::loop() {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 Status PIDController::cleanup() {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 float PIDController::compute(float value, float target) 

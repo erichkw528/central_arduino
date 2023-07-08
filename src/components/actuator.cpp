@@ -1,48 +1,51 @@
 #include "actuator.h"
-#include "utilities.h"
+
 ActuationModule::ActuationModule(SteeringLimiter *limiter,
                                  PWMVoltageConverterModule *pwm_to_voltage_converter,
                                  SparkMaxModule *spark_max_module,
-                                 BrakeActuator *brake_module
-                                 )
+                                 BrakeActuator *brake_module)
 {
     this->steering_limiter = limiter;
     this->pwm_to_voltage_converter = pwm_to_voltage_converter;
     this->spark_max_module = spark_max_module;
     this->brake_module = brake_module;
+    this->name = "ActuationModule";
 }
 
 Status ActuationModule::setup()
 {
-    return Status::SUCCESS;
+
+    return Status::OK;
 }
 
 Status ActuationModule::loop()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 Status ActuationModule::cleanup()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
-Actuation * ActuationModule::p_ensure_safety(Actuation *act)
+Actuation *ActuationModule::p_ensure_safety(Actuation *act)
 {
     Actuation *output = new Actuation();
     output->brake = act->brake;
     output->reverse = act->reverse;
-    output->throttle = 0 > act->throttle ? 0 : act->throttle; // MAX(0, act->throttle);
+    output->throttle = act->throttle < 0 ? 0 : act->throttle;
     output->steering = act->steering;
 
     if (this->steering_limiter->isLeftLimiterON())
     {
-        output->steering = MIN(0, act->steering);
+        Serial.println("LEFT ON");
+        output->steering = act->steering < 0 ? 0 : act->steering;
     }
 
     if (this->steering_limiter->isRightLimiterON())
     {
-        output->steering = MAX(0, act->steering);
+        Serial.println("RIGHT ON");
+        output->steering = act->steering > 0 ? 0 : act->steering;
     }
     return output;
 }

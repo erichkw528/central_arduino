@@ -19,6 +19,7 @@ class ThrottlePIDController : public BaseModule
         float kp = 1;
         float kd = 0;
         float ki = 0;
+
     private:
 
 
@@ -30,6 +31,9 @@ class ThrottlePIDController : public BaseModule
         float prev_err = 0;
         float time_last = 0;
         float output = 0;
+        unsigned long pM = 0UL;
+        unsigned long interval = 100UL;
+        float prev_output = 0.0;
 };
 
 #endif // THROTTLE_PID_h

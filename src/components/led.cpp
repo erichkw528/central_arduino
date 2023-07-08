@@ -5,48 +5,49 @@
 #include <Arduino.h>
 #include "led.h"
 
-LEDModule::LEDModule(int pin, uint32_t blink_interval=500) 
+LEDModule::LEDModule(int pin)
 {
     this->pin = pin;
     this->led_builtin_was_on = false;
-    this->blink_interval=500;
+    this->blink_interval = 500;
     this->last_blink_time = millis();
-    this->mode = LEDMode::Blink;
+    this->mode = LEDMode::SYSTEM_ERROR;
+    this->name = "LEDModule";
 }
 
 Status LEDModule::setup()
 {
     pinMode(pin, OUTPUT);
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 Status LEDModule::loop()
 {
     switch (this->mode)
     {
-    case LEDMode::Blink:
+    case LEDMode::MANUAL_MODE:
         this->blink();
         break;
-    case LEDMode::ON:
-        this->blink();
+    case LEDMode::AUTONOMOUS_MODE:
+        this->turnOn();
         break;
     default:
         this->turnOff();
         break;
     }
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 Status LEDModule::cleanup()
 {
     this->turnOff();
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 Status LEDModule::setMode(LEDMode desiredMode)
 {
     this->mode = desiredMode;
-    return Status::SUCCESS;
+    return Status::OK;
 }
 void LEDModule::turnOn()
 {
