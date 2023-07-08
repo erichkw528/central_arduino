@@ -38,11 +38,13 @@ Actuation *ActuationModule::p_ensure_safety(Actuation *act)
 
     if (this->steering_limiter->isLeftLimiterON())
     {
+        Serial.println("LEFT ON");
         output->steering = act->steering < 0 ? 0 : act->steering;
     }
 
     if (this->steering_limiter->isRightLimiterON())
     {
+        Serial.println("RIGHT ON");
         output->steering = act->steering > 0 ? 0 : act->steering;
     }
     return output;

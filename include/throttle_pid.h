@@ -33,6 +33,7 @@ class ThrottlePIDController : public BaseModule
         float output = 0;
         unsigned long pM = 0UL;
         unsigned long interval = 100UL;
+        float prev_output = 0.0;
 };
 
 #endif // THROTTLE_PID_h

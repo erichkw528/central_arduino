@@ -17,54 +17,6 @@ void loop()
     ethernet_communicator->setVehicleState(*vehicle_state);
 }
 
-// void runPIDs()
-// {
-//     // run PID
-//     float steering_effort = steering_pid->compute(vehicle_state->current_angle, target_steering_angle_deg);
-//     float throttle_effort = throttle_pid->compute(vehicle_state->current_speed, target_speed);
-//     Serial.print(" throttle_effort: ");
-//     Serial.print(throttle_effort);
-//     vehicle_state->current_actuation->steering =
-//         steering_effort; // radio_link->getSteering(); // actually sending steering
-//     vehicle_state->current_actuation->throttle = throttle_effort;
-
-//     if (ethernet_communicator)
-//     {
-//         ethernet_communicator->setVehicleState(*vehicle_state);
-//     }
-
-//     // Serial.print(" radioLink Steering: ");
-//     // Serial.print(target_steering_angle_deg);
-//     // Serial.print(" Output Steering: ");
-//     // Serial.print(steering_effort);
-//     /**
-//      * PID tuning
-//      */
-//     // Serial.print(" Current: ");
-//     // Serial.print(vehicle_state->speed);
-
-//     // Serial.print(" Target: ");
-//     // Serial.print(target_speed);
-
-//     // Serial.print(" Throttle: ");
-//     // Serial.print(throttle_effort);
-
-//     // int val = analogRead(A5);
-//     // float kp = (val - 0) / (1023.0) * (1.0);
-//     // throttle_pid->kp = kp;
-//     // Serial.print(" kp: ");
-//     // Serial.print(throttle_pid->kp);
-
-//     // Serial.print(" kd: ");
-//     // Serial.print(throttle_pid->kd);
-
-//     // val = analogRead(A4);
-//     // float kd = (val - 0) / (1023.0) * (1.0);
-//     // throttle_pid->ki = kd;
-//     // Serial.print(" ki: ");
-//     // Serial.print(throttle_pid->ki);
-// }
-
 void setupModules()
 {
     module_manager = new ModuleManager();
@@ -99,7 +51,7 @@ void setupModules()
     steering_pid = new PIDController(0.03, 0, 0, -1.0, 1.0);
     module_manager->setupModule(steering_pid);
 
-    throttle_pid = new ThrottlePIDController(0.16, 0.0, 0.07, 0.0, 1.0);
+    throttle_pid = new ThrottlePIDController(0.14, 0.07, 0.07, 0.0, 1.0);
     module_manager->setupModule(throttle_pid);
 
     ethernet_communicator = new EthernetCommunicator();
@@ -113,6 +65,7 @@ void synchronizeModules()
     // vehicle_state->angular_velocity = steering_angle_sensor->getAngularVelocity();
     vehicle_state->is_left_limiter_ON = steering_limiter->isLeftLimiterON();
     vehicle_state->is_right_limiter_ON = steering_limiter->isRightLimiterON();
+
     vehicle_state->current_speed = speed_sensor->getAvgSpeed();
 
     float target_steering_angle_deg = 0;
@@ -140,6 +93,13 @@ void synchronizeModules()
     float steering_effort = steering_pid->compute(vehicle_state->current_angle, target_steering_angle_deg);
     float throttle_effort = throttle_pid->compute(vehicle_state->current_speed, target_speed);
 
+    Serial.print(" vehicle_state->current_speed: ");
+    Serial.print(vehicle_state->current_speed);
+    Serial.print(" target_speed: ");
+    Serial.print(target_speed);    
+    Serial.print(" throttle_effort: ");
+    Serial.print(throttle_effort);
+    Serial.println();
     vehicle_state->current_actuation->steering = steering_effort;
     vehicle_state->current_actuation->throttle = throttle_effort;
 }
