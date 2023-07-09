@@ -27,6 +27,6 @@ extern const float CURR_THROTTLE_WEIGHT;
 #define CAN_RTR_BIT 8
 extern const float MIN_BRAKE_DIST;
 extern const float MAX_BRAKE_DIST;
-extern const float MIN_EFFECTIVE_SPEED_FOR_BRAKE;
-
+extern const float PRIME_DIST;
+extern const float OPEN_BRAKE_DIST;
 #endif // MACROS_h
