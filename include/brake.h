@@ -32,6 +32,8 @@ public:
 private:
   bool isCANConnected = false;
   float latestSpeedError = 0.0;
+  bool hasEnteredCase1 = true;
+  float brake_out = 2;
 };
 
 #endif  // BRAKE_h

@@ -23,4 +23,5 @@ const float CURR_THROTTLE_WEIGHT = 1.0; // TODO: tune this weight
 #define CAN_RTR_BIT 8
 const float MIN_BRAKE_DIST = 0.0; // Minimum distance for actuator
 const float MAX_BRAKE_DIST = 3.0; // Maximum safe distance that the actuator can move (inches)
-const float MIN_EFFECTIVE_SPEED_FOR_BRAKE = 2.0;
+const float PRIME_DIST = 1.8;
+const float OPEN_BRAKE_DIST = 0.0; // Minimum distance for actuator
