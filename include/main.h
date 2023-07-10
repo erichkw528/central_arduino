@@ -12,7 +12,12 @@
 #include "steering_limiter.h"
 #include "spark_max.h"
 #include "actuator.h"
-#include "SerialCommunications.h"
+#include "ethernet_communicator.h"
+#include "pid_controller.h"
+#include "speed_sensor.h"
+#include "brake.h"
+#include "throttle_pid.h"
+#include "pid_controller.h"
 
 VehicleState *vehicle_state;
 
@@ -24,7 +29,12 @@ RadioLinkModule *radio_link;
 SteeringLimiter *steering_limiter;
 SparkMaxModule *spark_max_module;
 ActuationModule *actuation_module;
-SerialCommunicator *serial_communicator;
+EthernetCommunicator *ethernet_communicator;
+
+SpeedSensor *speed_sensor;
+BrakeActuator *brake_actuator;
+PIDController *steering_pid;
+ThrottlePIDController *throttle_pid;
 
 float steering;
 /**
@@ -32,8 +42,7 @@ float steering;
  * @note
  * @retval None
  */
-void
-setup();
+void setup();
 
 /**
  * @brief  main loop
@@ -48,7 +57,7 @@ void loop();
 void setupModules();
 
 /**
- * @brief This function synchronizes the state of all modules in the system. 
+ * @brief This function synchronizes the state of all modules in the system.
  * @note this function should run BEFORE moduleManager.loop()
  */
 void synchronizeModules();

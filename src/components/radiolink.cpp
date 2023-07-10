@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 #include "radiolink.h"
+#include "macros.h"
 
 static uint32_t throttle_source_pin;
 static uint32_t steering_source_pin;
@@ -21,7 +22,7 @@ static volatile int button_last_interrupt_time;
 
 static volatile int throttle_pulse_time;
 static volatile int steering_pulse_time;
-static volatile int brake_pulse_time;
+static volatile int knob_pulse_time;
 static volatile int button_pulse_time;
 
 RadioLinkModule::RadioLinkModule(uint32_t throttle_pin, uint32_t steering_pin, uint32_t brake_pin, uint32_t button_pin)
@@ -35,8 +36,9 @@ RadioLinkModule::RadioLinkModule(uint32_t throttle_pin, uint32_t steering_pin, u
 
     throttle_pulse_time = 1500;
     steering_pulse_time = 1500;
-    brake_pulse_time = 1500;
+    knob_pulse_time = 1500;
     button_pulse_time = 1500;
+    this->name = "RadioLinkModule";
 }
 Status RadioLinkModule::setup()
 {
@@ -48,39 +50,64 @@ Status RadioLinkModule::setup()
     attachInterrupt(steering_source_pin, calcSteeringSignal, CHANGE);
     attachInterrupt(brake_source_pin, calcBrakeSignal, CHANGE);
     attachInterrupt(button_source_pin, calcButtonSignal, CHANGE);
-    return Status::SUCCESS;
+    return Status::OK;
 }
 Status RadioLinkModule::loop()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 Status RadioLinkModule::cleanup()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
+float RadioLinkModule::getSteeringDeg()
+{
+    int flagValue = 0;
+    flagValue = steering_pulse_time;
+    float steering_value = pulseTimeToFloat(flagValue);
+    float converted =
+        (steering_value + 1.0) / (1.0 + 1.0) * (MAX_STEERING_DEGREE - MIN_STEERING_DEGREE) + MIN_STEERING_DEGREE;
+    return converted;
+}
+
+float RadioLinkModule::getTargetSpeed()
+{
+    int flagValue = 0;
+    flagValue = throttle_pulse_time;                    // 1000 ~ 2000
+    float throttle_val = pulseTimeToFloat(flagValue);   // -1 ~ 1
+    float capped = throttle_val < 0 ? 0 : throttle_val; // 0 ~ 1
+    float targetSpeed = capped * RADIO_LINK_MAX_SPEED_GAIN;
+    // float converted = (steering_value + 1.0) / (1.0 + 1.0) * (MAX_STEERING_DEGREE - MIN_STEERING_DEGREE) +
+    // MIN_STEERING_DEGREE;
+    return targetSpeed;
+}
+
 float RadioLinkModule::getSteering()
 {
     int flagValue = 0;
     flagValue = steering_pulse_time;
-    return pulseTimeToFloat(flagValue);
+    float steering_value = pulseTimeToFloat(flagValue);
+    return steering_value;
 }
 
 float RadioLinkModule::getThrottle()
 {
     int flagValue = 0;
     flagValue = throttle_pulse_time;
-    return pulseTimeToFloat(flagValue);
+    float throttle_value = max(0, pulseTimeToFloat(flagValue));
+    return throttle_value;
 }
 
 float RadioLinkModule::getBrake()
 {
     int flagValue = 0;
-    flagValue = brake_pulse_time;
-    return pulseTimeToFloat(flagValue);
+    flagValue = throttle_pulse_time;
+    float brake_value = min(0, pulseTimeToFloat(flagValue)) * -1;
+    return brake_value;
 }
+
 void RadioLinkModule::calcThrottleSignal()
 {
-
     // record the interrupt time so that we can tell if the receiver has a signal from the transmitter
     throttle_last_interrupt_time = micros();
     // if the pin has gone HIGH, record the microseconds since the Arduino started up
@@ -104,7 +131,6 @@ void RadioLinkModule::calcThrottleSignal()
 
 void RadioLinkModule::calcSteeringSignal()
 {
-
     // record the interrupt time so that we can tell if the receiver has a signal from the transmitter
     steering_last_interrupt_time = micros();
     // if the pin has gone HIGH, record the microseconds since the Arduino started up
@@ -128,7 +154,6 @@ void RadioLinkModule::calcSteeringSignal()
 
 void RadioLinkModule::calcBrakeSignal()
 {
-
     // record the interrupt time so that we can tell if the receiver has a signal from the transmitter
     brake_last_interrupt_time = micros();
     // if the pin has gone HIGH, record the microseconds since the Arduino started up
@@ -143,7 +168,7 @@ void RadioLinkModule::calcBrakeSignal()
         if (brake_timer_start != 0)
         {
             // record the pulse time
-            brake_pulse_time = constrain(((volatile int)micros() - brake_timer_start), 1000, 2000);
+            knob_pulse_time = constrain(((volatile int)micros() - brake_timer_start), 1000, 2000);
             // restart the timer
             brake_timer_start = 0;
         }
@@ -173,23 +198,12 @@ void RadioLinkModule::calcButtonSignal()
     }
 }
 
-Actuation * RadioLinkModule::getRadioLinkActuation() 
-{    
-    Actuation * act = new Actuation();
-    act->throttle = this->pulseTimeToFloat(throttle_pulse_time);
-    act->steering = this->pulseTimeToFloat(steering_pulse_time);
-    act->brake = this->pulseTimeToFloat(brake_pulse_time);
-    act->reverse = false;
-    return act;
-}
-
 bool RadioLinkModule::isAutoFromButton()
 {
     return button_pulse_time >= 1600;
 }
 
-float
-RadioLinkModule::pulseTimeToFloat(uint32_t pulse_time)
+float RadioLinkModule::pulseTimeToFloat(uint32_t pulse_time)
 {
     float val = constrain(pulse_time, 1000, 2000);
     val = (val - 1000.0) / (2000.0 - 1000.0) * (1 - -1) + -1;

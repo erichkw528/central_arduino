@@ -2,13 +2,13 @@
 
 Status BaseModule::setup()
 {
-return Status::SUCCESS;
+    return Status::OK;
 }
 Status BaseModule::loop()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 Status BaseModule::cleanup()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }

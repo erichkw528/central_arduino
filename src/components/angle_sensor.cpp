@@ -6,13 +6,14 @@
 SteeringAngleSensor::SteeringAngleSensor(int pin)
 {
     this->pin = pin;
+    this->name = "SteeringAngleSensor";
 }
 
 Status SteeringAngleSensor::setup()
 {
     if (this->pin)
     {
-        return Status::SUCCESS;
+        return Status::OK;
     }
     return Status::FAILED;
 }
@@ -23,15 +24,19 @@ Status SteeringAngleSensor::loop()
     {
         return Status::FAILED;
     }
-    
+
     float sensorValue = analogRead(this->pin);
-    float angle = (sensorValue - 0) / (1023 - 0) * (this->RIGHT_ANGLE - this->LEFT_ANGLE) + this->LEFT_ANGLE;
+    // Serial.print(" Sensor Value: ");
+    // Serial.print(sensorValue);
+    // float angle = -1 * ((sensorValue - 0) / (1023 - 0) * (30 - -30) + -30);
+
+    float angle = -1 * ((sensorValue - 0) / (1023 - 0) * (MAX_STEERING_DEGREE - MIN_STEERING_DEGREE) + MIN_STEERING_DEGREE);
     this->currentAngle = angle;
 
     this->addReading(this->currentAngle);
     this->currentAngularVelocity = this->calcVelocity();
 
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 void SteeringAngleSensor::addReading(float reading)
@@ -42,17 +47,19 @@ void SteeringAngleSensor::addReading(float reading)
 
 float SteeringAngleSensor::calcVelocity()
 {
-    if (reading_buffer.size() != STEERING_ANGLE_BUFFER_LEN || timestamp_buffer.size() != STEERING_ANGLE_BUFFER_LEN) {
+    if (reading_buffer.size() != STEERING_ANGLE_BUFFER_LEN || timestamp_buffer.size() != STEERING_ANGLE_BUFFER_LEN)
+    {
         return 0.0;
     }
     // find the earliest timestamp
     uint32_t min_timestamp_index = -1;
     uint32_t min_timestamp = millis();
-    for (uint32_t i = 0; i < timestamp_buffer.size(); i ++)
+    for (uint32_t i = 0; i < timestamp_buffer.size(); i++)
     {
-        if (timestamp_buffer[i] < min_timestamp) {
+        if (timestamp_buffer[i] < min_timestamp)
+        {
             min_timestamp_index = i;
-        }   
+        }
     }
     // find average velocity between each pair
     float total = 0;
@@ -75,7 +82,7 @@ float SteeringAngleSensor::calcVelocity()
 
 Status SteeringAngleSensor::cleanup()
 {
-    return Status::SUCCESS;
+    return Status::OK;
 }
 
 float SteeringAngleSensor::getSteeringAngle()

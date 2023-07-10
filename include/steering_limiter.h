@@ -6,7 +6,7 @@
 
 #include "models.h"
 #include "base_module.h"
-    class SteeringLimiter : public BaseModule
+class SteeringLimiter : public BaseModule
 {
 public:
     SteeringLimiter(uint32_t left_pin, uint32_t right_pin);

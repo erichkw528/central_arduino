@@ -3,11 +3,14 @@
 // license that can be found in the LICENSE file.
 
 #include <brake.h>
+#include <macros.h>
 
 mcp2515_can CAN(SPI_CS_PIN);
-int output_brake_max = 2000;
-int output_brake_min = 1500;
-int prev_brake = 1000;
+int output_brake_max = 1;
+int output_brake_min = 0;
+int prev_brake = 0;
+unsigned char stmp[8] = {0x0F, 0x0A, 0x00, 0xC4, 0xC9, 0x00, 0x00, 0x00};
+unsigned char stmpa[8] = {0x0F, 0x4A, 0x00, 0xC0, 0xC9, 0x00, 0x00, 0x00};
 
 void overwriteBuf(volatile byte *buf, int b0, int b1, int b2, int b3, int b4, int b5, int b6, int b7)
 {
@@ -42,36 +45,15 @@ String posCmdBite3Parser(int ce, int m, String dpos_hi)
 }
 
 /*
- *   Initialize the Actuator
- */
-void actuatorInit()
-{
-    while (CAN_OK != CAN.begin(CAN_250KBPS))
-    { // init can bus : baudrate = 500k
-        // Serial.println("CAN init fail, retry...");
-        delay(10);
-    }
-    // Serial.println("CAN init ok!");
-
-    //    // Disable everything
-    //    CAN.sendMsgBuf(COMMAND_ID, 1, 8, CLUTCH_MOTOR_OFF);
-    //    delay(20);
-
-    // Enable clutch for loop input
-    CAN.sendMsgBuf(COMMAND_ID, CAN_EXT_ID, CAN_RTR_BIT, CLUTCH_ON);
-    delay(20);
-
-    setActuatorPosition(MIN_DIST);
-    delay(3000);
-}
-
-/*
  *   Move the Actuator to designated position in inches.
  *   The Actuator will execute whatever
  *   the latest command is immediately.
  */
 void setActuatorPosition(float inputDist)
 {
+    Serial.print(" Final out: ");
+    Serial.print(inputDist);
+   
     unsigned char data[8] = {0, 0, 0, 0, 0, 0, 0, 0};
     String bite2;
     String bite3;
@@ -79,14 +61,8 @@ void setActuatorPosition(float inputDist)
     String dpos_hi;
 
     // Clipping input range
-    if (inputDist < 0.0)
-    {
-        inputDist = 0.0;
-    }
-    if (inputDist > MAX_DIST)
-    {
-        inputDist = MAX_DIST;
-    }
+    inputDist = inputDist < MIN_BRAKE_DIST ? MIN_BRAKE_DIST : inputDist;
+    inputDist = inputDist > MAX_BRAKE_DIST ? MAX_BRAKE_DIST : inputDist;
 
     // Convert input to hex
     int intDist = inputDist * 1000 + 500; // in 0.001” steps
@@ -101,37 +77,126 @@ void setActuatorPosition(float inputDist)
 
     // Clutch on, Motor on and move to the desired position
     bite3 = posCmdBite3Parser(1, 1, dpos_hi);
-    overwriteBuf(data, 0x0F, 0x4A, strHexToInt(const_cast<char *>(bite2.c_str())), strHexToInt(const_cast<char *>(bite3.c_str())), 0, 0, 0, 0);
+    overwriteBuf(data, 0x0F, 0x4A, strHexToInt(const_cast<char *>(bite2.c_str())),
+                 strHexToInt(const_cast<char *>(bite3.c_str())), 0, 0, 0, 0);
 
     CAN.sendMsgBuf(COMMAND_ID, CAN_EXT_ID, CAN_RTR_BIT, data);
 }
 
-void setupBrake()
+BrakeActuator::BrakeActuator()
 {
-    actuatorInit();
+    this->name = "BrakeActuator";
 }
 
-/**
- * @param brake value from 1000 - 2000
- */
-void writeToBrake(float brake)
+Status BrakeActuator::setup()
 {
-    // TODO: revamp
-    // float brake_out = float(constrain(brake, output_brake_min, output_brake_max));
+    if (CAN_OK == CAN.begin(CAN_250KBPS))
+    { // init can bus : baudrate = 500k
+        isCANConnected = true;
+        Serial.println("CAN init ok!");
+    }
+    else
+    {
+        isCANConnected = false;
+        Serial.println("CAN init failed!");
+    }
+    return Status::OK;
+}
 
-    // if (brake_out != prev_brake && brake_out > 1800)
+Status BrakeActuator::loop()
+{
+    if (!isCANConnected)
+    {
+        if (CAN_OK == CAN.begin(CAN_250KBPS))
+        { // init can bus : baudrate = 500k
+            isCANConnected = true;
+            Serial.println("CAN init ok!");
+        }
+        else
+        {
+            isCANConnected = false;
+        }
+    }
+
+    return Status::OK;
+}
+
+Status BrakeActuator::cleanup()
+{
+    return Status::OK;
+}
+
+void BrakeActuator::setSpeedError(float error)
+{
+    this->latestSpeedError = error;
+}
+void BrakeActuator::writeToBrake(float val)
+{
+    if (latestSpeedError <= 1) {
+        brake_out = OPEN_BRAKE_DIST;
+    }
+    else if (latestSpeedError > 1)
+    {
+        Serial.print(" OPEN BRAKE ");
+        brake_out = PRIME_DIST;
+    } 
+
+    float user_request_brake = float(constrain(val, output_brake_min, output_brake_max));
+    if (user_request_brake > 0.1)
+    {
+        Serial.print(" PRIME DIST ");
+        brake_out = PRIME_DIST + (MAX_BRAKE_DIST-PRIME_DIST) *user_request_brake;
+    }
+
+    setActuatorPosition(brake_out);
+    return;
+   
+    // Serial.print(" Verr: ");
+    // Serial.print(latestSpeedError);
+    // if (latestSpeedError > 2)
     // {
-    //     prev_brake = brake_out;
-    //     float actuator_out = map(brake_out, output_brake_min, output_brake_max, MIN_DIST, MAX_DIST);
-    //     setActuatorPosition(actuator_out);
-    //     return;
+    //     Serial.print(" OPEN BRAKE ");
+    //     brake_out = OPEN_BRAKE_DIST;
+    // } 
+    // else if (latestSpeedError < 1) 
+    // {
+    //     Serial.print(" PRIME DIST ");
+    //     brake_out = PRIME_DIST;
+    // } 
+
+    // float user_request_brake = float(constrain(val, output_brake_min, output_brake_max));
+    // if (user_request_brake > 0.2)
+    // {
+    //     Serial.print(" PRIME DIST ");
+    //     brake_out = max(PRIME_DIST, user_request_brake * MAX_BRAKE_DIST);
     // }
 
-    // if (brake_out != prev_brake && brake_out < 1200)
+    // setActuatorPosition(brake_out);
+    // return;
+
+
+    // float scaleBreakOutput = map((brake_out*1000),0,1000,2000,2700);
+    // if (brake_out < 0.05)
     // {
-    //     prev_brake = brake_out;
-    //     float actuator_out = map(brake_out, output_brake_min, output_brake_max, MIN_DIST, MAX_DIST);
-    //     setActuatorPosition(actuator_out);
+    //     scaleBreakOutput = 0;
+    // }
+    // setActuatorPosition(scaleBreakOutput/1000);
+   // setActuatorPosition(2.0); // test if goes to 2.0
+    
+    // if (brake_out > 0.2)
+    // {
+    //     float output = brake_out * MAX_BRAKE_DIST;
+    //     setActuatorPosition(output);
     //     return;
     // }
+    
+    // float scaleBrakeOutput = map((brake_out*10000),0,10000,20000,25600);
+    // if (brake_out==0){
+    //     scaleBrakeOutput = 0;
+    // } else if (latestSpeedError < MIN_EFFECTIVE_SPEED_FOR_BRAKE)
+    // {
+    //     scaleBrakeOutput = 20000;
+    // } 
+    // float brake_output = scaleBrakeOutput/10000;
+    // setActuatorPosition(brake_output);
 }
