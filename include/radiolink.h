@@ -7,7 +7,6 @@
 #include "models.h"
 #include "macros.h"
 
-
 class RadioLinkModule : public BaseModule
 {
     static void calcThrottleSignal();
@@ -26,18 +25,23 @@ public:
     float getSteeringDeg();
     /**
      * 0 ~ 1
-    */
+     */
     float getThrottle();
     /**
      * 0 ~ 1
-    */
+     */
     float getBrake();
 
     /**
      * 0 - maxSpeed
-    */
-   float getTargetSpeed();
+     */
+    float getTargetSpeed();
 
 private:
     float pulseTimeToFloat(uint32_t pulse_time);
+    void p_processButton();
+
+    bool isButtonPressed;
+    bool isButtonLifted;
+    bool isAutoMode;
 };

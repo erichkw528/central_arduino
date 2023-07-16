@@ -54,6 +54,7 @@ Status RadioLinkModule::setup()
 }
 Status RadioLinkModule::loop()
 {
+    this->p_processButton();
     return Status::OK;
 }
 Status RadioLinkModule::cleanup()
@@ -200,7 +201,39 @@ void RadioLinkModule::calcButtonSignal()
 
 bool RadioLinkModule::isAutoFromButton()
 {
-    return button_pulse_time >= 1600;
+    return this->isAutoMode;
+}
+
+void RadioLinkModule::p_processButton()
+{
+
+    bool prevButtonPressed = this->isButtonPressed;
+    bool prevButtonLifted = this->isButtonLifted;
+
+    // update the new button state
+    if (button_pulse_time >= 1600)
+    {
+        this->isButtonPressed = true;
+    }
+    else
+    {
+        this->isButtonPressed = false;
+    }
+
+    if (button_pulse_time <= 1400)
+    {
+        this->isButtonLifted = true;
+    }
+    else
+    {
+        this->isButtonLifted = false;
+    }
+
+    // process whether the button is pressed
+    if (prevButtonPressed && this->isButtonLifted)
+    {
+        this->isAutoMode = !this->isAutoMode;
+    }
 }
 
 float RadioLinkModule::pulseTimeToFloat(uint32_t pulse_time)

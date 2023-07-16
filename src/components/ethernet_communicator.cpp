@@ -7,7 +7,7 @@
 #define UDP_PACKET_MAX_SIZE_CUSTOM 128
 byte mac[] = {
     0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
-IPAddress ip(10, 42, 0, 4);
+IPAddress ip(10, 0, 0, 9);
 unsigned int localPort = 1883;                 // local port to listen on
 char packetBuffer[UDP_PACKET_MAX_SIZE_CUSTOM]; // buffer to hold incoming packet,
 EthernetUDP Udp;
