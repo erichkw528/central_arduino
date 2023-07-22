@@ -206,7 +206,6 @@ bool RadioLinkModule::isAutoFromButton()
 
 void RadioLinkModule::p_processButton()
 {
-
     bool prevButtonPressed = this->isButtonPressed;
     bool prevButtonLifted = this->isButtonLifted;
 
@@ -232,7 +231,15 @@ void RadioLinkModule::p_processButton()
     // process whether the button is pressed
     if (prevButtonPressed && this->isButtonLifted)
     {
-        this->isAutoMode = !this->isAutoMode;
+        Serial.print("Shifting mode");
+        if (this->isAutoMode)
+        {
+            this->isAutoMode = false;
+        }
+        else
+        {
+            this->isAutoMode = true;
+        }
     }
 }
 

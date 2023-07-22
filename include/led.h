@@ -74,6 +74,7 @@ public:
    * @return A Status indicating success or failure.
    */
   Status setMode(LEDMode desiredMode);
+  LEDMode getMode();
 
 private:
   /**

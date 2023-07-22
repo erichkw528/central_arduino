@@ -49,6 +49,11 @@ Status LEDModule::setMode(LEDMode desiredMode)
     this->mode = desiredMode;
     return Status::OK;
 }
+
+LEDMode LEDModule::getMode()
+{
+    return this->mode;
+}
 void LEDModule::turnOn()
 {
     digitalWrite(this->pin, HIGH); // turn the LED on (HIGH is the voltage level)

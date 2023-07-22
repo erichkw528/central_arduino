@@ -51,9 +51,9 @@ String posCmdBite3Parser(int ce, int m, String dpos_hi)
  */
 void setActuatorPosition(float inputDist)
 {
-    Serial.print(" Final out: ");
-    Serial.print(inputDist);
-   
+    // Serial.print(" Final out: ");
+    // Serial.print(inputDist);
+
     unsigned char data[8] = {0, 0, 0, 0, 0, 0, 0, 0};
     String bite2;
     String bite3;
@@ -132,37 +132,38 @@ void BrakeActuator::setSpeedError(float error)
 }
 void BrakeActuator::writeToBrake(float val)
 {
-    if (latestSpeedError <= 1) {
+    if (latestSpeedError <= 1)
+    {
         brake_out = OPEN_BRAKE_DIST;
     }
     else if (latestSpeedError > 1)
     {
         Serial.print(" OPEN BRAKE ");
         brake_out = PRIME_DIST;
-    } 
+    }
 
     float user_request_brake = float(constrain(val, output_brake_min, output_brake_max));
     if (user_request_brake > 0.1)
     {
         Serial.print(" PRIME DIST ");
-        brake_out = PRIME_DIST + (MAX_BRAKE_DIST-PRIME_DIST) *user_request_brake;
+        brake_out = PRIME_DIST + (MAX_BRAKE_DIST - PRIME_DIST) * user_request_brake;
     }
 
     setActuatorPosition(brake_out);
     return;
-   
+
     // Serial.print(" Verr: ");
     // Serial.print(latestSpeedError);
     // if (latestSpeedError > 2)
     // {
     //     Serial.print(" OPEN BRAKE ");
     //     brake_out = OPEN_BRAKE_DIST;
-    // } 
-    // else if (latestSpeedError < 1) 
+    // }
+    // else if (latestSpeedError < 1)
     // {
     //     Serial.print(" PRIME DIST ");
     //     brake_out = PRIME_DIST;
-    // } 
+    // }
 
     // float user_request_brake = float(constrain(val, output_brake_min, output_brake_max));
     // if (user_request_brake > 0.2)
@@ -174,29 +175,28 @@ void BrakeActuator::writeToBrake(float val)
     // setActuatorPosition(brake_out);
     // return;
 
-
     // float scaleBreakOutput = map((brake_out*1000),0,1000,2000,2700);
     // if (brake_out < 0.05)
     // {
     //     scaleBreakOutput = 0;
     // }
     // setActuatorPosition(scaleBreakOutput/1000);
-   // setActuatorPosition(2.0); // test if goes to 2.0
-    
+    // setActuatorPosition(2.0); // test if goes to 2.0
+
     // if (brake_out > 0.2)
     // {
     //     float output = brake_out * MAX_BRAKE_DIST;
     //     setActuatorPosition(output);
     //     return;
     // }
-    
+
     // float scaleBrakeOutput = map((brake_out*10000),0,10000,20000,25600);
     // if (brake_out==0){
     //     scaleBrakeOutput = 0;
     // } else if (latestSpeedError < MIN_EFFECTIVE_SPEED_FOR_BRAKE)
     // {
     //     scaleBrakeOutput = 20000;
-    // } 
+    // }
     // float brake_output = scaleBrakeOutput/10000;
     // setActuatorPosition(brake_output);
 }

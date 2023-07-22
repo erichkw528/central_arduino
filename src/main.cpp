@@ -87,11 +87,13 @@ void synchronizeModules()
         target_steering_angle_deg = radio_link->getSteeringDeg();
         target_speed = radio_link->getTargetSpeed();
     }
-    
+    // Serial.print("Mode: ");
+    // Serial.print(led_module->getMode().toString());
+
     // set state
     vehicle_state->target_speed = target_speed;
     vehicle_state->target_steering_angle = target_steering_angle_deg;
-    
+
     // run PID
     float steering_effort = steering_pid->compute(vehicle_state->current_angle, target_steering_angle_deg);
     float throttle_effort = throttle_pid->compute(vehicle_state->current_speed, target_speed);
@@ -102,6 +104,5 @@ void synchronizeModules()
     brake_actuator->setSpeedError(vehicle_state->current_speed);
 
     // brake_actuator->setSpeedError(vehicle_state->target_speed-vehicle_state->current_speed);
-    Serial.println();
-
+    // Serial.println();
 }
