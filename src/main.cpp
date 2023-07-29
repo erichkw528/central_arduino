@@ -87,6 +87,7 @@ void synchronizeModules()
         target_steering_angle_deg = radio_link->getSteeringDeg();
         target_speed = radio_link->getTargetSpeed();
     }
+    target_speed = (target_speed > MAX_SPEED) ? MAX_SPEED : target_speed; // limit target speed by max speed
     // Serial.print("Mode: ");
     // Serial.print(led_module->getMode().toString());
 

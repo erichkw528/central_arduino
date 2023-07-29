@@ -17,6 +17,7 @@ const float NEW_READING_WEIGHT = 1.0;      // TODO: tune this weight
 // throttle
 const float PREV_THROTTLE_WEIGHT = 1.0; // TODO: tune this weight
 const float CURR_THROTTLE_WEIGHT = 1.0; // TODO: tune this weight
+const float MAX_SPEED = 20.0;           // TODO: tune this
 
 // brake
 #define CAN_EXT_ID 1
