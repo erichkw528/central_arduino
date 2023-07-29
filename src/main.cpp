@@ -13,8 +13,8 @@ void loop()
 {
     synchronizeModules();
     module_manager->loop();
-    actuation_module->actuate(vehicle_state);
     ethernet_communicator->setVehicleState(*vehicle_state);
+    actuation_module->actuate(vehicle_state); // must keep as the last action
 }
 
 void setupModules()
