@@ -1,4 +1,5 @@
 #include "actuator.h"
+#include "macros.h"
 
 ActuationModule::ActuationModule(SteeringLimiter *limiter,
                                  PWMVoltageConverterModule *pwm_to_voltage_converter,
@@ -52,6 +53,25 @@ Actuation *ActuationModule::p_ensure_safety(Actuation *act)
 void ActuationModule::p_drive(VehicleState *vehicle_state)
 {
     Actuation *act = this->p_ensure_safety(vehicle_state->current_actuation);
+    // Serial.print(" steering: ");
+    // Serial.print(act->steering);
+    // Serial.print(" vehicle_state->current_angle: ");
+    // Serial.println(vehicle_state->current_angle);
+    // software steering limit
+    if (vehicle_state->current_angle >= SOFTWARE_MAX_STEERING_ANGLE_LIMIT)
+    {
+
+        // Serial.println("MAX STEERING");
+
+        act->steering = act->steering > 0 ? 0 : act->steering;
+    }
+
+    if (vehicle_state->current_angle <= SOFTWARE_MIN_STEERING_ANGLE_LIMIT)
+    {
+        // Serial.println("MIN STEERING");
+        act->steering = act->steering < 0 ? 0 : act->steering;
+    }
+
     spark_max_module->writeToSteering(act->steering);
     pwm_to_voltage_converter->writeToThrottle(act->throttle);
     brake_module->writeToBrake(act->brake);

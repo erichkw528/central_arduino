@@ -3,6 +3,9 @@
 // steering
 const float MIN_STEERING_DEGREE = -30.0;
 const float MAX_STEERING_DEGREE = 30.0;
+const float SOFTWARE_MIN_STEERING_ANGLE_LIMIT = -28.0;
+const float SOFTWARE_MAX_STEERING_ANGLE_LIMIT = 28.0;
+
 
 // radio link
 const float RADIO_LINK_MAX_SPEED_GAIN = 20.0;
@@ -17,7 +20,7 @@ const float NEW_READING_WEIGHT = 1.0;      // TODO: tune this weight
 // throttle
 const float PREV_THROTTLE_WEIGHT = 1.0; // TODO: tune this weight
 const float CURR_THROTTLE_WEIGHT = 1.0; // TODO: tune this weight
-const float MAX_SPEED = 20.0;           // TODO: tune this
+const float MAX_SPEED = 5.0;            // TODO: tune this
 
 // brake
 #define CAN_EXT_ID 1

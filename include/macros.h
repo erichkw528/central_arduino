@@ -4,6 +4,8 @@
 // steering
 extern const float MIN_STEERING_DEGREE;
 extern const float MAX_STEERING_DEGREE;
+extern const float SOFTWARE_MIN_STEERING_ANGLE_LIMIT;
+extern const float SOFTWARE_MAX_STEERING_ANGLE_LIMIT;
 
 // radio link
 extern const float RADIO_LINK_MAX_SPEED_GAIN;

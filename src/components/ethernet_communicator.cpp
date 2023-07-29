@@ -138,9 +138,9 @@ EthernetCommunicator::ActuationModelFromEthernet EthernetCommunicator::parseJSON
     act.steeringAngle = doc["steering_angle"].as<float>();
     act.brake = doc["brake"].as<float>();
     act.reverse = doc["reverse"].as<bool>();
-    Serial.print("Time: ");
-    Serial.print(millis());
-    Serial.print(" Received command from Ethernet: ");
-    printActuationModel(act);
+    // Serial.print("Time: ");
+    // Serial.print(millis());
+    // Serial.print(" Received command from Ethernet: ");
+    // printActuationModel(act);
     return act;
 }
