@@ -99,6 +99,12 @@ void synchronizeModules()
     float steering_effort = steering_pid->compute(vehicle_state->current_angle, target_steering_angle_deg);
     float throttle_effort = throttle_pid->compute(vehicle_state->current_speed, target_speed);
 
+    // if it is autonomous mode, limit the output throttle by radiolink's output
+    if (radio_link->isAutoFromButton())
+    {
+        throttle_effort = throttle_effort * radio_link->getThrottle(); // scale throttle effort by throttle from radio link
+    }
+
     vehicle_state->current_actuation->steering = steering_effort;
     vehicle_state->current_actuation->throttle = throttle_effort;
 
