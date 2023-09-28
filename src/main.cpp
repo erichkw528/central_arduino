@@ -62,6 +62,12 @@ void setupModules()
 
     ethernet_communicator = new EthernetCommunicator();
     module_manager->setupModule(ethernet_communicator);
+
+    // relay_module = new RelayController();
+    // module_manager->setupModule(relay_module);
+
+    state_collection = new StateCollector();
+    module_manager->setupModule(state_collection);
 }
 
 void synchronizeModules()
@@ -118,4 +124,7 @@ void synchronizeModules()
 
     // brake_actuator->setSpeedError(vehicle_state->target_speed-vehicle_state->current_speed);
     // Serial.println();
+
+
+    state_collection->write_states(someinput);//need to find the input here
 }
