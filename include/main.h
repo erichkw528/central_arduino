@@ -18,7 +18,6 @@
 #include "brake.h"
 #include "throttle_pid.h"
 #include "pid_controller.h"
-// #include "reversing_relay.h"
 #include "state_collection.h"
 
 VehicleState *vehicle_state;
@@ -38,7 +37,6 @@ BrakeActuator *brake_actuator;
 PIDController *steering_pid;
 ThrottlePIDController *throttle_pid;
 
-//RelayController *relay_module;
 StateCollector *state_collection;
 
 

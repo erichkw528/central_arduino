@@ -1,10 +1,5 @@
 #include "state_collection.h"
 
-// StateCollector::StateCollector(LEDModule* ledModule, Module2* module2, ... , Module8* module8)
-//     : _ledModule(ledModule), _module2(module2), /* ... */ _module8(module8)
-// {
-//     this->name = "State Collector";
-// }
 
 StateCollector::StateCollector()
 {
@@ -17,20 +12,38 @@ Status StateCollector::setup()
     return Status::OK;
 }
 
-byte StateCollector::collectStates(bool isReverse) 
+byte StateCollector::collectStates(bool isForward) 
 {
+    byte bits[8];
+    bits[0] = isForward; // Assuming isForward is either 0 or 1
+    bits[1] = !isForward; // isReverse is either 0 or 1
+    bits[2] = 0;
+    bits[3] = 0;
+    bits[4] = 0;
+    bits[5] = 0;
+    bits[6] = 0;
+    bits[7] = 0;
+
     byte state = 0;
-    if (isReverse) { 
-        state |= 1 << 0; // Set the first bit of the state to reverse status
+
+    for(int i = 0; i < 8; i++) {
+        state |= (bits[i] << i);
     }
-    // If more states need to be added, continue here
+
     return state;
 }
 
-void StateCollector::write_states(bool isReverse) 
+
+
+void StateCollector::write_states(Actuation *act, bool isForward) 
 {
-    if (prev_isReverse != isReverse) {
-        byte sentState = collectStates(isReverse); // Collect states with the isReverse parameter
+    // Only proceed if reverse is allowed
+    if (!act->reverse) {
+        return;  // Exit the function early if reverse is not allowed
+    }
+
+    if (prev_isForward != isForward) {
+        byte sentState = collectStates(isForward); // Collect states with the isForward parameter
 
         // Send to esp8266
         Serial1.write(sentState);
@@ -47,10 +60,11 @@ void StateCollector::write_states(bool isReverse)
                 }
             }
         }
-        delay(1000);
 
-        prev_isReverse = isReverse; // Update the previous reverse status after sending
+        prev_isForward = isForward; // Update the previous forward status after sending
     }
+    // Serial.print("state");
+    // Serial.print(isForward);
 }
 
 

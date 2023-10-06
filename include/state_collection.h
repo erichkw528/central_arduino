@@ -2,30 +2,24 @@
 #define _STATE_COLLECTION_H
 
 #include "base_module.h"
-#include <Arduino.h>
-#include "led.h"  
-// #include "otherModule.h"
+#include <Arduino.h> 
+#include "models.h"
 
 #define ACK_TIMEOUT 1000  
 
 class StateCollector : public BaseModule
 {
 public:
-    //LEDModule* ledModule, Module2* module2, ... , Module8* module8
     StateCollector();
     Status setup();
     Status cleanup();
 
-    void write_states(bool isReverse);
+    void write_states(Actuation *act, bool isForward);
     
 private:
-    byte collectStates(bool isReverse);
-    // LEDModule* _ledModule;
-    // Module2* _module2;
-    // // ...
-    // Module8* _module8;
+    byte collectStates(bool isForward);
 
-    bool prev_isReverse = false;
+    bool prev_isForward = false;
 };
 
 #endif
