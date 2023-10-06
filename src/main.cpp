@@ -48,13 +48,12 @@ void setupModules()
     actuation_module = new ActuationModule(steering_limiter, pwm_to_voltage_converter, spark_max_module, brake_actuator);
     module_manager->setupModule(actuation_module);
 
-
     steering_pid = new PIDController(.020, .0002, 0.00018, -1.0, 1.0); // test
 
-    //steering_pid = new PIDController(0.035, 0.000001, 0.000001, -1.0, 1.0);
+    // steering_pid = new PIDController(0.035, 0.000001, 0.000001, -1.0, 1.0);
     module_manager->setupModule(steering_pid);
 
-    //throttle_pid = new ThrottlePIDController(0.3, 0.0001, 0.005, 0.0, 1.0); // michael
+    // throttle_pid = new ThrottlePIDController(0.3, 0.0001, 0.005, 0.0, 1.0); // michael
     throttle_pid = new ThrottlePIDController(0.0015, 0.000002, 0.18, 0.0, 1.0); // jeff
     // throttle_pid = new ThrottlePIDController(0.015, 0.000001, 0.15, 0.0, 1.0);// good
     // throttle_pid = new ThrottlePIDController(0.015, 0.000002, 0.315, 0.0, 1.0);
@@ -122,8 +121,10 @@ void synchronizeModules()
     // brake_actuator->setSpeedError(vehicle_state->target_speed-vehicle_state->current_speed);
     // Serial.println();
 
-    
-    bool isForward = radio_link->getIsForward();
-    
-    state_collection->write_states(vehicle_state->current_actuation, vehicle_state->current_speed, throttle_effort, isForward);
+    bool isForward;
+    if (vehicle_state->current_speed < 1)
+    {
+        isForward = radio_link->getIsForward();
+    }
+    state_collection->write_states(vehicle_state->current_actuation, isForward);
 }
