@@ -34,37 +34,42 @@ byte StateCollector::collectStates(bool isForward)
 }
 
 
-
-void StateCollector::write_states(Actuation *act, bool isForward) 
+void StateCollector::write_states(Actuation *act, float current_speed, float throttle_effort, bool isForward) 
 {
-    // Only proceed if reverse is allowed
-    if (!act->reverse) {
-        return;  // Exit the function early if reverse is not allowed
+    // If reverse is not allowed, exit early
+    if (!act->reverse || current_speed >= 1) {
+        return;  
     }
 
-    if (prev_isForward != isForward) {
-        byte sentState = collectStates(isForward); // Collect states with the isForward parameter
+    // Generate the initial state based on the isForward parameter
+    byte sentState = collectStates(isForward); 
 
-        // Send to esp8266
+    // If the car is not moving and there's no throttle input, clear the first two bits
+    if (throttle_effort == 0 && current_speed < 1) {
+        sentState &= ~0b00000011;
+    }
+
+    // Only send data when speed is less tha 1.
+    if (current_speed < 1 && sentState != lastSentState) {
+        // Transmit the state to the esp8266
         Serial1.write(sentState);
         Serial1.flush();
 
         unsigned long startTime = millis();
         bool ackReceived = false;
+        // Wait for an acknowledgment or timeout
         while (millis() - startTime < ACK_TIMEOUT && !ackReceived) {
             if (Serial1.available()) {
                 byte receivedState = Serial1.read();
                 if (receivedState == sentState) {
                     ackReceived = true;
-                    Serial1.write('A');
+                    Serial1.write('A');  // Send acknowledgment response
                 }
             }
         }
-
-        prev_isForward = isForward; // Update the previous forward status after sending
+        
+        lastSentState = sentState;
     }
-    // Serial.print("state");
-    // Serial.print(isForward);
 }
 
 

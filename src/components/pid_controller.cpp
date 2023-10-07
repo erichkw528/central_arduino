@@ -36,23 +36,23 @@ float PIDController::compute(float value, float target)
     {
         total_err += error; 
         output = error * this->kp + (error - prev_err)/dt * this->kd + this->total_err * this->ki;
-         Serial.print(" target:");
-         //Serial.print(target);
-         Serial.print(" value:");
-         //Serial.print(value);
-         Serial.print(" error:");
-         Serial.print(error);
-         Serial.print(" total_err:");
-         Serial.print(total_err);   
-         Serial.print(" P:");
-         Serial.print(error * this->kp);
-         Serial.print(" D:");
-         Serial.print( (error - prev_err)/dt * this->kd);
-         Serial.print(" I:");
-         Serial.print(this->total_err * this->ki);
-         Serial.print(" output:");
-         Serial.print(output);   
-         Serial.println();    
+        //  Serial.print(" target:");
+        //  //Serial.print(target);
+        //  Serial.print(" value:");
+        //  //Serial.print(value);
+        //  Serial.print(" error:");
+        //  Serial.print(error);
+        //  Serial.print(" total_err:");
+        //  Serial.print(total_err);   
+        //  Serial.print(" P:");
+        //  Serial.print(error * this->kp);
+        //  Serial.print(" D:");
+        //  Serial.print( (error - prev_err)/dt * this->kd);
+        //  Serial.print(" I:");
+        //  Serial.print(this->total_err * this->ki);
+        //  Serial.print(" output:");
+        //  Serial.print(output);   
+        //  Serial.println();    
     
        if (value == 0)
        {

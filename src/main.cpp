@@ -122,9 +122,9 @@ void synchronizeModules()
     // brake_actuator->setSpeedError(vehicle_state->target_speed-vehicle_state->current_speed);
     // Serial.println();
 
-    bool isForward;
-    if (vehicle_state->current_speed<1){
-        isForward = radio_link->getIsForward();
-    }
-    state_collection->write_states(vehicle_state->current_actuation, isForward);
+    
+    bool isForward = radio_link->getIsForward();
+    // float throttleInput = radio_link->getThrottle();
+    
+    state_collection->write_states(vehicle_state->current_actuation, vehicle_state->current_speed, throttle_effort, isForward);
 }

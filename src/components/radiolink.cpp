@@ -256,7 +256,6 @@ void RadioLinkModule::checkForward()
     if (knob_pulse_time > 1200) 
     {
         isForward = false; 
-        Serial.print("knob change");
     }
     else
     {
