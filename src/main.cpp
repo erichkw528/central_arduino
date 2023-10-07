@@ -124,7 +124,6 @@ void synchronizeModules()
 
     
     bool isForward = radio_link->getIsForward();
-    // float throttleInput = radio_link->getThrottle();
     
     state_collection->write_states(vehicle_state->current_actuation, vehicle_state->current_speed, throttle_effort, isForward);
 }
