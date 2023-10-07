@@ -11,6 +11,9 @@ class SparkMaxModule : public BaseModule
 {
 const int OUTPUT_STEERING_MAX = 2000;
 const int OUTPUT_STEERING_MIN = 1000;
+const int SMOOTH_INTERVAL = 0; //micro seconds
+unsigned long previousMicros = 0;
+unsigned long steering_Output = 1500;
 
 public:
     SparkMaxModule(uint32_t pin);
@@ -24,6 +27,9 @@ private:
     void checkServoAttachments();
     void setupSparkMax();
     Servo servoSteering;
+
+
+
 };
 
 #endif // _SPARK_MAX_MODULE_h

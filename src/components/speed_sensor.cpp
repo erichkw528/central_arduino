@@ -9,7 +9,7 @@ SpeedSensor::SpeedSensor(uint32_t speed_sensor_pin)
 }
 Status SpeedSensor::setup()
 {
-    attachInterrupt(this->pin, pulseCounter, CHANGE);
+    attachInterrupt(this->pin, pulseCounter, RISING);
 
     return Status::OK;
 }
@@ -43,13 +43,17 @@ float SpeedSensor::getLatestReading()
     // if reached debounce time
     // calculate how many times did the pulse came in within the elapsed time
     unsigned long elapsedTime = currentTime - prevTime;
-    float distanceInches = pulseCount * (WHEEL_CIRCUMFERENCE / 2.0);  // Calculate distance in inches
+    float distanceInches = pulseCount * WHEEL_CIRCUMFERENCE ;  // Calculate distance in inches
     float distanceMiles = distanceInches / INCHES_PER_MILE;           // Convert distance to miles
     lastSensorReadingMph = distanceMiles / (elapsedTime / 3600000.0); // Calculate speed in mph
 
     pulseCount = 0;
     prevTime = currentTime;
+   // Serial.print(" lastSensorReadingMph: ");
+  //  Serial.print(lastSensorReadingMph);    
+    
     return lastSensorReadingMph;
+
 }
 
 Status SpeedSensor::cleanup()

@@ -16,7 +16,7 @@
 #include "macros.h"
 
 const uint32_t STEERING_ANGLE_BUFFER_LEN = 5;
-
+const uint32_t STEERING_ANGLE_CAL_POT_FACTOR = 10;
 struct SteeringReading
 {
     float reading;
@@ -33,8 +33,9 @@ public:
      * the `pin` member variable.
      *
      * @param pin Pin number for the sensor.
+     * @param calPin Pin number for calibration potentiometer.
      */
-    SteeringAngleSensor(int pin);
+    SteeringAngleSensor(int pin, int calPin);
 
     /**
      * @brief Sets up the sensor
@@ -95,6 +96,10 @@ private:
      * @brief Pin number for the sensor
      */
     int pin;
+    /**
+     * @brief Pin number for the calibration potentiometer
+    */
+    int calPin;
     /**
      * @brief add new reading to the buffer
     */

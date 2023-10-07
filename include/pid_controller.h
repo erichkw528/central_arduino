@@ -30,6 +30,10 @@ class PIDController : public BaseModule
         float prev_err = 0;
         float time_last = 0;
         float output = 0;
+     //   unsigned long pM = 0UL;
+     //   unsigned long interval = 1UL;
+      //  float prev_output = 0.0;
+
 };
 
 #endif //PID_CONTROLLER_h

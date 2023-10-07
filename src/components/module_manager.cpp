@@ -11,8 +11,8 @@ Status ModuleManager::loop()
         Status s = module->loop();
         if (s == Status::FAILED)
         {
-            Serial.print("Failed: ");
-            Serial.println(module->name);
+ //           Serial.print("Failed: ");
+ //           Serial.println(module->name);
         }
     }
     return Status::OK;

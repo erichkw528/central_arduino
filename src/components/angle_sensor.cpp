@@ -3,9 +3,10 @@
 #include "pin.h"
 #include "angle_sensor.h"
 
-SteeringAngleSensor::SteeringAngleSensor(int pin)
+SteeringAngleSensor::SteeringAngleSensor(int pin, int calPin)
 {
     this->pin = pin;
+    this->calPin = calPin;
     this->name = "SteeringAngleSensor";
 }
 
@@ -25,13 +26,19 @@ Status SteeringAngleSensor::loop()
         return Status::FAILED;
     }
 
-    float sensorValue = analogRead(this->pin);
+    float steeringCalSensorVal = analogRead(this->calPin);
+    float steering_cal_offset = (512 - steeringCalSensorVal)/STEERING_ANGLE_CAL_POT_FACTOR;
+    float sensorValue = analogRead(this->pin) + steering_cal_offset;
     // Serial.print(" Sensor Value: ");
     // Serial.print(sensorValue);
+    // Serial.println(); 
     // float angle = -1 * ((sensorValue - 0) / (1023 - 0) * (30 - -30) + -30);
 
     float angle = -1 * ((sensorValue - 0) / (1023 - 0) * (MAX_STEERING_DEGREE - MIN_STEERING_DEGREE) + MIN_STEERING_DEGREE);
     this->currentAngle = angle;
+
+    // Serial.print(" base angle: ");
+   //  Serial.print(angle);
 
     this->addReading(this->currentAngle);
     this->currentAngularVelocity = this->calcVelocity();
@@ -88,6 +95,9 @@ Status SteeringAngleSensor::cleanup()
 float SteeringAngleSensor::getSteeringAngle()
 {
     return this->currentAngle;
+     Serial.print("current angle: ");
+     Serial.print(currentAngle);
+
 }
 float SteeringAngleSensor::getAngularVelocity()
 {

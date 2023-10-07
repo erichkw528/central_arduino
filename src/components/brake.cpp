@@ -138,14 +138,14 @@ void BrakeActuator::writeToBrake(float val)
     }
     else if (latestSpeedError > 1)
     {
-        Serial.print(" OPEN BRAKE ");
+       // Serial.print(" OPEN BRAKE ");
         brake_out = PRIME_DIST;
     }
 
     float user_request_brake = float(constrain(val, output_brake_min, output_brake_max));
     if (user_request_brake > 0.1)
     {
-        Serial.print(" PRIME DIST ");
+       //Serial.print(" PRIME DIST ");
         brake_out = PRIME_DIST + (MAX_BRAKE_DIST - PRIME_DIST) * user_request_brake;
     }
 

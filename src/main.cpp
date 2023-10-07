@@ -24,7 +24,7 @@ void setupModules()
     led_module = new LEDModule(LED_BUILTIN);
     module_manager->setupModule(led_module);
 
-    steering_angle_sensor = new SteeringAngleSensor(STEERING_ANGLE_SENSOR);
+    steering_angle_sensor = new SteeringAngleSensor(STEERING_ANGLE_SENSOR, STEERING_ANGLE_CAL_POT);
     module_manager->setupModule(steering_angle_sensor);
 
     pwm_to_voltage_converter = new PWMVoltageConverterModule(THROTTLE_OUTPUT_PIN);
@@ -48,10 +48,16 @@ void setupModules()
     actuation_module = new ActuationModule(steering_limiter, pwm_to_voltage_converter, spark_max_module, brake_actuator);
     module_manager->setupModule(actuation_module);
 
-    steering_pid = new PIDController(0.03, 0, 0, -1.0, 1.0);
+
+    steering_pid = new PIDController(.020, .0002, 0.00018, -1.0, 1.0); // test
+
+    //steering_pid = new PIDController(0.035, 0.000001, 0.000001, -1.0, 1.0);
     module_manager->setupModule(steering_pid);
 
-    throttle_pid = new ThrottlePIDController(0.14, 0.07, 0.07, 0.0, 1.0);
+    //throttle_pid = new ThrottlePIDController(0.3, 0.0001, 0.005, 0.0, 1.0); // michael
+    throttle_pid = new ThrottlePIDController(0.0015, 0.000002, 0.18, 0.0, 1.0); // jeff
+    // throttle_pid = new ThrottlePIDController(0.015, 0.000001, 0.15, 0.0, 1.0);// good
+    // throttle_pid = new ThrottlePIDController(0.015, 0.000002, 0.315, 0.0, 1.0);
     module_manager->setupModule(throttle_pid);
 
     ethernet_communicator = new EthernetCommunicator();
@@ -74,7 +80,7 @@ void synchronizeModules()
         led_module->setMode(LEDMode::AUTONOMOUS_MODE);
 
         // get data from serial communicator
-        vehicle_state->current_actuation->brake = ethernet_communicator->getAction().brake;
+        vehicle_state->current_actuation->brake = ethernet_communicator->getAction().brake + radio_link->getBrake();
         target_speed = ethernet_communicator->getAction().targetSpeed;
         target_steering_angle_deg = ethernet_communicator->getAction().steeringAngle;
     }
