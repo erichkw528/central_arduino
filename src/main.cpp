@@ -62,8 +62,8 @@ void setupModules()
     ethernet_communicator = new EthernetCommunicator();
     module_manager->setupModule(ethernet_communicator);
 
-    state_collection = new StateCollector();
-    module_manager->setupModule(state_collection);
+    // state_collection = new StateCollector();
+    // module_manager->setupModule(state_collection);
 }
 
 void synchronizeModules()
@@ -121,10 +121,10 @@ void synchronizeModules()
     // brake_actuator->setSpeedError(vehicle_state->target_speed-vehicle_state->current_speed);
     // Serial.println();
 
-    bool isForward;
-    if (vehicle_state->current_speed < 1)
-    {
-        isForward = radio_link->getIsForward();
-    }
-    state_collection->write_states(vehicle_state->current_actuation, isForward);
+    // bool isForward;
+    // if (vehicle_state->current_speed < 1)
+    // {
+    //     isForward = radio_link->getIsForward();
+    // }
+    // state_collection->write_states(vehicle_state->current_actuation, vehicle_state->current_speed, vehicle_state->current_actuation->throttle, isForward);
 }
