@@ -232,7 +232,7 @@ void RadioLinkModule::p_processButton()
     // process whether the button is pressed
     if (prevButtonPressed && this->isButtonLifted)
     {
-        Serial.print("Shifting mode");
+        // Serial.println("Shifting mode");
         if (this->isAutoMode)
         {
             this->isAutoMode = false;

@@ -48,7 +48,7 @@ void setupModules()
     actuation_module = new ActuationModule(steering_limiter, pwm_to_voltage_converter, spark_max_module, brake_actuator);
     module_manager->setupModule(actuation_module);
 
-    steering_pid = new PIDController(.020, .0002, 0.00018, -1.0, 1.0); // test
+    steering_pid = new PIDController(.02, .0002, 0.00018, -1.0, 1.0); // test
 
     // steering_pid = new PIDController(0.035, 0.000001, 0.000001, -1.0, 1.0);
     module_manager->setupModule(steering_pid);
@@ -62,8 +62,8 @@ void setupModules()
     ethernet_communicator = new EthernetCommunicator();
     module_manager->setupModule(ethernet_communicator);
 
-    // state_collection = new StateCollector();
-    // module_manager->setupModule(state_collection);
+    state_collection = new StateCollector();
+    module_manager->setupModule(state_collection);
 }
 
 void synchronizeModules()
@@ -106,7 +106,6 @@ void synchronizeModules()
     // run PID
     float steering_effort = steering_pid->compute(vehicle_state->current_angle, target_steering_angle_deg);
     float throttle_effort = throttle_pid->compute(vehicle_state->current_speed, target_speed);
-
     // if it is autonomous mode, limit the output throttle by radiolink's output
     if (radio_link->isAutoFromButton())
     {
@@ -118,13 +117,10 @@ void synchronizeModules()
 
     brake_actuator->setSpeedError(vehicle_state->current_speed);
 
-    // brake_actuator->setSpeedError(vehicle_state->target_speed-vehicle_state->current_speed);
-    // Serial.println();
-
-    // bool isForward;
-    // if (vehicle_state->current_speed < 1)
-    // {
-    //     isForward = radio_link->getIsForward();
-    // }
-    // state_collection->write_states(vehicle_state->current_actuation, vehicle_state->current_speed, vehicle_state->current_actuation->throttle, isForward);
+    bool isForward;
+    if (vehicle_state->current_speed < 1)
+    {
+        isForward = radio_link->getIsForward();
+    }
+    state_collection->write_states(vehicle_state->current_actuation, vehicle_state->current_speed, vehicle_state->current_actuation->throttle, isForward);
 }

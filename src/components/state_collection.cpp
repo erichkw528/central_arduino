@@ -75,8 +75,8 @@ void StateCollector::write_states(Actuation *act, float current_speed, float thr
 
         lastSentState = sentState;
     }
-    // Serial.print("state");
-    // Serial.print(isForward);
+    Serial.print("state");
+    Serial.print(isForward);
 }
 
 Status StateCollector::cleanup()

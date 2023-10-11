@@ -49,12 +49,12 @@ Actuation *ActuationModule::p_ensure_safety(Actuation *act)
         output->steering = act->steering < 0 ? 0 : act->steering;
     }
 
-    if (last_known_vehicle_state->current_speed > 1.0) {
-        act->reverse = false;  // Ensure reverse is false when speed is greater than 1
-    }
-    else{
-        act->reverse = true;
-    }
+    // if (last_known_vehicle_state->current_speed > 1.0) {
+    //     act->reverse = false;  // Ensure reverse is false when speed is greater than 1
+    // }
+    // else{
+    //     act->reverse = true;
+    // }
 
     return output;
 }
