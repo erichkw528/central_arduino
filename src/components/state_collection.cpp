@@ -35,8 +35,8 @@ byte StateCollector::collectStates(bool isForward)
 
 void StateCollector::write_states(Actuation *act, float current_speed, float throttle_effort, bool isForward)
 {
-    // If reverse is not allowed, exit early
-    if (!act->reverse || current_speed >= 1)
+    // if speed is > 1, do not allow changing states
+    if (current_speed >= 1)
     {
         return;
     }
@@ -45,13 +45,14 @@ void StateCollector::write_states(Actuation *act, float current_speed, float thr
     byte sentState = collectStates(isForward);
 
     // If the car is not moving and there's no throttle input, clear the first two bits
+    // if the car is not moving, put the car in neutral (note, motor will automatically brake)
     if (throttle_effort == 0 && current_speed < 1)
     {
         sentState &= ~0b00000011;
     }
 
-    // Only send data when speed is less tha 1.
-    if (current_speed < 1 && sentState != lastSentState)
+    // send data to relay board only if a state change is detected
+    if (sentState != lastSentState)
     {
         // Transmit the state to the esp8266
         Serial1.write(sentState);
@@ -75,8 +76,9 @@ void StateCollector::write_states(Actuation *act, float current_speed, float thr
 
         lastSentState = sentState;
     }
-    Serial.print("state");
-    Serial.print(isForward);
+    // Serial.print("state");
+    // Serial.print(isForward);
+    // Serial.println("");
 }
 
 Status StateCollector::cleanup()

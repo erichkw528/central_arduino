@@ -253,7 +253,7 @@ float RadioLinkModule::pulseTimeToFloat(uint32_t pulse_time)
 
 void RadioLinkModule::checkForward()
 {
-    if (knob_pulse_time > 1200)
+    if (knob_pulse_time < 1200)
     {
         isForward = false;
     }

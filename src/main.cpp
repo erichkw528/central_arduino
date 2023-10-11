@@ -117,10 +117,7 @@ void synchronizeModules()
 
     brake_actuator->setSpeedError(vehicle_state->current_speed);
 
-    bool isForward;
-    if (vehicle_state->current_speed < 1)
-    {
-        isForward = radio_link->getIsForward();
-    }
+    bool isForward = radio_link->getIsForward();
+    
     state_collection->write_states(vehicle_state->current_actuation, vehicle_state->current_speed, vehicle_state->current_actuation->throttle, isForward);
 }
