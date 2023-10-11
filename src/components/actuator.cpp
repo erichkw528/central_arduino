@@ -48,8 +48,17 @@ Actuation *ActuationModule::p_ensure_safety(Actuation *act)
         Serial.println("RIGHT ON");
         output->steering = act->steering < 0 ? 0 : act->steering;
     }
+
+    // if (last_known_vehicle_state->current_speed > 1.0) {
+    //     act->reverse = false;  // Ensure reverse is false when speed is greater than 1
+    // }
+    // else{
+    //     act->reverse = true;
+    // }
+
     return output;
 }
+
 void ActuationModule::p_drive(VehicleState *vehicle_state)
 {
     Actuation *act = this->p_ensure_safety(vehicle_state->current_actuation);
@@ -80,5 +89,6 @@ void ActuationModule::p_drive(VehicleState *vehicle_state)
 
 void ActuationModule::actuate(VehicleState *vehicle_state)
 {
+    last_known_vehicle_state = vehicle_state;
     p_drive(vehicle_state);
 }

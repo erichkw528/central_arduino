@@ -48,13 +48,14 @@ Status RadioLinkModule::setup()
     button_timer_start = 0;
     attachInterrupt(throttle_source_pin, calcThrottleSignal, CHANGE);
     attachInterrupt(steering_source_pin, calcSteeringSignal, CHANGE);
-    attachInterrupt(brake_source_pin, calcBrakeSignal, CHANGE);
+    attachInterrupt(brake_source_pin, calcReverseSignal, CHANGE);
     attachInterrupt(button_source_pin, calcButtonSignal, CHANGE);
     return Status::OK;
 }
 Status RadioLinkModule::loop()
 {
     this->p_processButton();
+    this->checkForward();
     return Status::OK;
 }
 Status RadioLinkModule::cleanup()
@@ -153,7 +154,7 @@ void RadioLinkModule::calcSteeringSignal()
     }
 }
 
-void RadioLinkModule::calcBrakeSignal()
+void RadioLinkModule::calcReverseSignal()
 {
     // record the interrupt time so that we can tell if the receiver has a signal from the transmitter
     brake_last_interrupt_time = micros();
@@ -231,7 +232,7 @@ void RadioLinkModule::p_processButton()
     // process whether the button is pressed
     if (prevButtonPressed && this->isButtonLifted)
     {
-        Serial.print("Shifting mode");
+        // Serial.println("Shifting mode");
         if (this->isAutoMode)
         {
             this->isAutoMode = false;
@@ -248,4 +249,16 @@ float RadioLinkModule::pulseTimeToFloat(uint32_t pulse_time)
     float val = constrain(pulse_time, 1000, 2000);
     val = (val - 1000.0) / (2000.0 - 1000.0) * (1 - -1) + -1;
     return val;
+}
+
+void RadioLinkModule::checkForward()
+{
+    if (knob_pulse_time < 1200)
+    {
+        isForward = false;
+    }
+    else
+    {
+        isForward = true;
+    }
 }

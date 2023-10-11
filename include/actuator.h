@@ -28,4 +28,5 @@ private:
     PWMVoltageConverterModule *pwm_to_voltage_converter;
     SparkMaxModule *spark_max_module;
     BrakeActuator *brake_module;
+    VehicleState* last_known_vehicle_state;
 };

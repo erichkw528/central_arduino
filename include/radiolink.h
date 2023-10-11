@@ -11,7 +11,7 @@ class RadioLinkModule : public BaseModule
 {
     static void calcThrottleSignal();
     static void calcSteeringSignal();
-    static void calcBrakeSignal();
+    static void calcReverseSignal();
     static void calcButtonSignal();
 
 public:
@@ -37,11 +37,16 @@ public:
      */
     float getTargetSpeed();
 
+    bool getIsForward() const {return isForward;}
+
+
 private:
     float pulseTimeToFloat(uint32_t pulse_time);
     void p_processButton();
+    void checkForward();
 
     bool isButtonPressed;
     bool isButtonLifted;
     bool isAutoMode;
+    bool isForward;
 };
