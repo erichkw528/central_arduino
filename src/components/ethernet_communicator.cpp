@@ -65,27 +65,36 @@ EthernetCommunicator::ActuationModelFromEthernet EthernetCommunicator::getAction
 
 void EthernetCommunicator::writeStateToUDP()
 {
-    DynamicJsonDocument jsonDocument(512);
-
-    JsonObject root = jsonDocument.to<JsonObject>();
-    root["is_auto"] = this->latest_vehicle_state.is_auto;
-    root["is_left_limiter_ON"] = this->latest_vehicle_state.is_left_limiter_ON;
-    root["is_right_limiter_ON"] = this->latest_vehicle_state.is_right_limiter_ON;
-    root["angle"] = this->latest_vehicle_state.current_angle;
-    root["angular_velocity"] = this->latest_vehicle_state.current_angular_velocity;
-    root["speed"] = this->latest_vehicle_state.current_speed;
-    root["target_speed"] = this->latest_vehicle_state.target_speed;
-    root["target_steering_angle"] = this->latest_vehicle_state.target_steering_angle;
-    // Create a nested JSON object for current_actuation
-    JsonObject current_actuation = root.createNestedObject("current_actuation");
-
-    current_actuation["throttle"] = this->latest_vehicle_state.current_actuation->throttle;
-    current_actuation["steering"] = this->latest_vehicle_state.current_actuation->steering;
-    current_actuation["brake"] = this->latest_vehicle_state.current_actuation->brake;
-    current_actuation["reverse"] = this->latest_vehicle_state.current_actuation->reverse;
+    String jsonString = "{";
+    jsonString += "\"is_auto\":";
+    jsonString += this->latest_vehicle_state.is_auto ? "true," : "false,";
+    jsonString += "\"is_left_limiter_ON\":";
+    jsonString += this->latest_vehicle_state.is_left_limiter_ON ? "true," : "false,";
+    jsonString += "\"is_right_limiter_ON\":";
+    jsonString += this->latest_vehicle_state.is_right_limiter_ON ? "true," : "false,";
+    jsonString += "\"angle\":";
+    jsonString += String(this->latest_vehicle_state.current_angle) + ",";
+    jsonString += "\"angular_velocity\":";
+    jsonString += String(this->latest_vehicle_state.current_angular_velocity) + ",";
+    jsonString += "\"speed\":";
+    jsonString += String(this->latest_vehicle_state.current_speed) + ",";
+    jsonString += "\"target_speed\":";
+    jsonString += String(this->latest_vehicle_state.target_speed) + ",";
+    jsonString += "\"target_steering_angle\":";
+    jsonString += String(this->latest_vehicle_state.target_steering_angle) + ",";
+    jsonString += "\"current_actuation\":{";
+    jsonString += "\"throttle\":";
+    jsonString += String(this->latest_vehicle_state.current_actuation->throttle) + ",";
+    jsonString += "\"steering\":";
+    jsonString += String(this->latest_vehicle_state.current_actuation->steering) + ",";
+    jsonString += "\"brake\":";
+    jsonString += String(this->latest_vehicle_state.current_actuation->brake) + ",";
+    jsonString += "\"reverse\":";
+    jsonString += this->latest_vehicle_state.current_actuation->reverse ? "true" : "false";
+    jsonString += "}}";
 
     Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
-    serializeJson(jsonDocument, Udp);
+    Udp.write(jsonString.c_str());
     Udp.endPacket();
 }
 
