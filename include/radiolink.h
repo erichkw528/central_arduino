@@ -38,7 +38,7 @@ public:
     float getTargetSpeed();
 
     bool getIsForward() const {return isForward;}
-
+    bool isRadioLinkConnected();
 
 private:
     float pulseTimeToFloat(uint32_t pulse_time);

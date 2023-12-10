@@ -56,9 +56,38 @@ Status RadioLinkModule::loop()
 {
     this->p_processButton();
     this->checkForward();
+
+    // Serial.print("Steering: ");
+    // Serial.print(steering_pulse_time);
+    // Serial.print(" | ");
+    // Serial.print("Throttle: ");
+    // Serial.print(throttle_pulse_time);
+    // Serial.print(" | ");
+    // Serial.print("Button: ");
+    // Serial.print(button_pulse_time);
+    // Serial.print(" | ");
+    // Serial.print("knob:");
+    // Serial.print(knob_pulse_time);
+    // Serial.println("");
+
     return Status::OK;
 }
-Status RadioLinkModule::cleanup()
+
+bool RadioLinkModule::isRadioLinkConnected()
+{
+    // it is impossible for knob_pulse_time to be (1450,1550) since button is either 1000 or 2000
+    // other values are purely for sanity checks
+    if (1450 < steering_pulse_time && steering_pulse_time < 1550 &&
+        1450 < throttle_pulse_time && throttle_pulse_time < 1550 &&
+        1450 < knob_pulse_time && knob_pulse_time < 1550 &&
+        1450 < button_pulse_time && button_pulse_time < 1550)
+    {
+        return false;
+    }
+    return true;
+}
+    Status
+    RadioLinkModule::cleanup()
 {
     return Status::OK;
 }
@@ -208,7 +237,6 @@ bool RadioLinkModule::isAutoFromButton()
 void RadioLinkModule::p_processButton()
 {
     bool prevButtonPressed = this->isButtonPressed;
-    bool prevButtonLifted = this->isButtonLifted;
 
     // update the new button state
     if (button_pulse_time >= 1600)
@@ -253,12 +281,12 @@ float RadioLinkModule::pulseTimeToFloat(uint32_t pulse_time)
 
 void RadioLinkModule::checkForward()
 {
-    if (knob_pulse_time < 1200)
+    if (knob_pulse_time > 1300)
     {
-        isForward = false;
+        isForward = true;
     }
     else
     {
-        isForward = true;
+        isForward = false;
     }
 }

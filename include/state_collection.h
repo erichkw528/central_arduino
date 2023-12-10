@@ -14,11 +14,11 @@ public:
     Status setup();
     Status cleanup();
 
-    void write_states(Actuation *act, float current_speed, float throttle_effort, bool isForward);
-    
+    void write_states(Actuation *act, float current_speed, float throttle_effort, bool isForward, bool canWriteState);
+
 private:
     byte collectStates(bool isForward);
-
+    bool isInNeutral = false;
     byte lastSentState;
 };
 

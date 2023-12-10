@@ -33,8 +33,11 @@ byte StateCollector::collectStates(bool isForward)
     return state;
 }
 
-void StateCollector::write_states(Actuation *act, float current_speed, float throttle_effort, bool isForward)
+void StateCollector::write_states(Actuation *act, float current_speed, float throttle_effort, bool isForward, bool canWriteState)
 {
+    if (canWriteState == false) {
+        return;
+    }
     // if speed is > 1, do not allow changing states
     if (current_speed >= 1)
     {
